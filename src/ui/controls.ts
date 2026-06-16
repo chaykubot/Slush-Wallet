@@ -11,9 +11,10 @@ import { updateCSS } from './cssSnapshot';
 /** Sync UI to the selected gradient type: show/hide swirl, relabel blob size. */
 export function applyGradType(): void {
   state.gradType = dom.gradType.value as GradientType;
+  const isWave = state.gradType === 'wave-h' || state.gradType === 'wave-v';
   dom.swirlSec.style.display = state.gradType === 'mesh' ? '' : 'none';
-  dom.blobsizeLabel.textContent =
-    state.gradType === 'wave-h' || state.gradType === 'wave-v' ? 'Wave amplitude' : 'Blob size';
+  dom.stretchSec.style.display = isWave ? '' : 'none';
+  dom.blobsizeLabel.textContent = isWave ? 'Wave amplitude' : 'Blob size';
   updateCSS();
 }
 

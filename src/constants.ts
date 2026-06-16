@@ -6,6 +6,7 @@ export const SLIDER_IDS = [
   'speed',
   'blobsize',
   'swirl',
+  'stretch',
   'zoom',
   'offx',
   'offy',
