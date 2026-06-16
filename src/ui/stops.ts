@@ -39,7 +39,7 @@ export function renderStops(): void {
 
     const hex = document.createElement('input');
     hex.className = 'stop-hex';
-    hex.value = c;
+    hex.value = c.toUpperCase();
 
     const del = document.createElement('button');
     del.className = 'stop-del';
@@ -48,7 +48,7 @@ export function renderStops(): void {
     picker.addEventListener('input', (e) => {
       const v = (e.target as HTMLInputElement).value;
       state.stops[i] = v;
-      hex.value = v;
+      hex.value = v.toUpperCase();
       updateCSS();
       makeGrain();
     });
