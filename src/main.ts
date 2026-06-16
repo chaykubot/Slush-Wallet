@@ -5,6 +5,7 @@ import { initStops, renderStops } from './ui/stops';
 import { initBrandSwatches } from './ui/brandSwatches';
 import { initCssSnapshot, updateCSS } from './ui/cssSnapshot';
 import { applyGradType, initControls } from './ui/controls';
+import { initExportControls } from './ui/exportControls';
 import { makeGrain } from './render/grain';
 import { loop, resize } from './render/renderer';
 
@@ -13,6 +14,7 @@ initStops();
 initBrandSwatches();
 initCssSnapshot();
 initControls();
+initExportControls();
 
 // Initialise — mirrors the original prototype's boot sequence.
 resize();

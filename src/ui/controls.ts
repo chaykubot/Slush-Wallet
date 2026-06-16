@@ -76,22 +76,6 @@ export function initControls(): void {
     makeGrain();
   });
 
-  dom.dlBtn.addEventListener('click', () => {
-    const out = document.createElement('canvas');
-    out.width = state.W;
-    out.height = state.H;
-    const oc = out.getContext('2d')!;
-    oc.drawImage(dom.gc, 0, 0);
-    if (state.grainOn) {
-      oc.globalCompositeOperation = 'overlay';
-      oc.drawImage(dom.grain, 0, 0);
-    }
-    const a = document.createElement('a');
-    a.download = 'gradient.png';
-    a.href = out.toDataURL('image/png');
-    a.click();
-  });
-
   window.addEventListener('resize', () => {
     resize();
     makeGrain();

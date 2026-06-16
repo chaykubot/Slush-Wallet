@@ -42,11 +42,14 @@ select { width: 100%; background: var(--surface); color: var(--text); border: 1p
 .canvas-wrap { flex: 1; position: relative; overflow: hidden; background: #000; }
 canvas#gc { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
 canvas#grain { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; mix-blend-mode: overlay; }
-.bottom-bar { border-top: 1px solid var(--border); padding: 8px 14px; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.bottom-bar { border-top: 1px solid var(--border); padding: 8px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; flex-shrink: 0; }
 .btn { display: flex; align-items: center; gap: 5px; font-size: 12px; padding: 5px 12px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text); }
 .btn:hover { background: rgba(255,255,255,0.09); }
 .btn.primary { background: #e8274b; border-color: transparent; color: #fff; font-weight: 500; }
 .btn.primary:hover { filter: brightness(1.1); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.recording { background: #e8274b; border-color: transparent; color: #fff; animation: rec-pulse 1.2s ease-in-out infinite; }
+@keyframes rec-pulse { 50% { filter: brightness(1.25); } }
 .spacer { flex: 1; }
 
 /* toggles */

@@ -63,9 +63,16 @@ export function resize(): void {
   offC.height = Math.round(state.H * OFF_SCALE);
 }
 
+/** Optional per-frame callback (used by the video recorder to grab each frame). */
+let frameHook: (() => void) | null = null;
+export function setFrameHook(fn: (() => void) | null): void {
+  frameHook = fn;
+}
+
 /** Animation loop: advance the clock by the speed slider and draw. */
 export function loop(): void {
   state.t += 0.004 * +dom.speed.value;
   drawGradient();
+  frameHook?.();
   state.raf = requestAnimationFrame(loop);
 }

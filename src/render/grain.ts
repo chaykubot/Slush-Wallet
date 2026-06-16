@@ -4,18 +4,15 @@ import { state } from '../state';
 import { hexToRgb } from '../utils/color';
 
 /**
- * Re-roll the static film-grain overlay. Generated at 1/size resolution then
- * upscaled with smoothing off, so specks stay square. Called only when grain
- * settings, colours or canvas size change — never per animation frame.
+ * Paint a film-grain layer into an arbitrary context at w×h. Generated at
+ * 1/size resolution then upscaled with smoothing off, so specks stay square.
+ * `pxScale` keeps speck size visually consistent when rendering at a different
+ * resolution than the live canvas (e.g. 2 for a 2× export).
  */
-export function makeGrain(): void {
-  if (!state.grainOn) return;
-  const w = dom.grain.width, h = dom.grain.height;
-  if (w === 0 || h === 0) return;
-
-  const px = +dom.grainSize.value; // speck size in px
+export function paintGrain(ctx: CanvasRenderingContext2D, w: number, h: number, pxScale = 1): void {
+  const px = Math.max(1, Math.round(+dom.grainSize.value * pxScale)); // speck size in px
   const bw = Math.ceil(w / px), bh = Math.ceil(h / px);
-  const id = gCtx.createImageData(bw, bh);
+  const id = ctx.createImageData(bw, bh);
   const d = id.data;
   const amt = +dom.grainAmt.value / 100;
 
@@ -41,7 +38,18 @@ export function makeGrain(): void {
   tmpC.width = bw;
   tmpC.height = bh;
   tmpC.getContext('2d')!.putImageData(id, 0, 0);
-  gCtx.clearRect(0, 0, w, h);
-  gCtx.imageSmoothingEnabled = false;
-  gCtx.drawImage(tmpC, 0, 0, w, h);
+  ctx.clearRect(0, 0, w, h);
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(tmpC, 0, 0, w, h);
+}
+
+/**
+ * Re-roll the static film-grain overlay on the visible grain canvas. Called
+ * only when grain settings, colours or canvas size change — never per frame.
+ */
+export function makeGrain(): void {
+  if (!state.grainOn) return;
+  const w = dom.grain.width, h = dom.grain.height;
+  if (w === 0 || h === 0) return;
+  paintGrain(gCtx, w, h);
 }
