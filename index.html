@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gradient Studio</title>
-  <script type="module" crossorigin src="/Slush-Wallet/assets/index-Dz7BtBSk.js"></script>
-  <link rel="stylesheet" crossorigin href="/Slush-Wallet/assets/index-D83pFEJ2.css">
+  <script type="module" crossorigin src="/Slush-Wallet/assets/index-DxnzO5R0.js"></script>
+  <link rel="stylesheet" crossorigin href="/Slush-Wallet/assets/index-BF8XTd4g.css">
 </head>
 <body>
 <header>
@@ -87,6 +87,11 @@
     </div>
 
     <div>
+      <div class="seg-label">GIF length</div>
+      <div class="slider-row"><input type="range" id="gif-len" min="5" max="10" value="6" step="1"><span class="sval" id="gif-len-v">6s</span></div>
+    </div>
+
+    <div>
       <div class="seg-label">CSS snapshot <span style="font-size:9px;opacity:.35">(click to copy)</span></div>
       <div class="css-block" id="css-out"></div>
     </div>
@@ -102,7 +107,10 @@
       <button class="btn" id="play-btn">⏸ Pause</button>
       <button class="btn" id="rand-btn">↺ Randomize</button>
       <div class="spacer"></div>
-      <button class="btn primary" id="dl-btn">↓ Download PNG</button>
+      <button class="btn" id="rec-btn">● Record</button>
+      <button class="btn" id="gif-btn">↓ GIF</button>
+      <button class="btn" id="dl-btn">↓ PNG</button>
+      <button class="btn primary" id="dl2x-btn">↓ PNG @2x</button>
     </div>
   </div>
 </div>
