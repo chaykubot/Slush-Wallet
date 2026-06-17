@@ -38,16 +38,18 @@ export function drawGradient(): void {
       result = offC;
   }
 
-  // Horizontal stretch for wave gradients: magnify the x axis by sampling a
-  // narrower source slice, so the wave pattern spreads out wider.
-  const isWave = state.gradType === 'wave-h' || state.gradType === 'wave-v';
-  const stretchX = isWave ? +dom.stretch.value / 100 : 1;
+  // Stretch for wave gradients: magnify along the wave's travel axis by sampling
+  // a narrower source slice, so the pattern spreads out. Wave-H stretches
+  // horizontally, Wave-V vertically.
+  const isWaveH = state.gradType === 'wave-h';
+  const isWaveV = state.gradType === 'wave-v';
+  const stretch = isWaveH || isWaveV ? +dom.stretch.value / 100 : 1;
 
   const { W, H } = state;
   ctx.clearRect(0, 0, W, H);
   ctx.filter = blurPx > 0 ? `blur(${blurPx}px)` : 'none';
-  const drawW = ow / zoom / stretchX;
-  const drawH = oh / zoom;
+  const drawW = ow / zoom / (isWaveH ? stretch : 1);
+  const drawH = oh / zoom / (isWaveV ? stretch : 1);
   // Offset pans the crop zone: -100 = left/top edge, 0 = centre, 100 = right/bottom edge.
   const panX = (ow - drawW) / 2 * (1 + offX);
   const panY = (oh - drawH) / 2 * (1 + offY);
