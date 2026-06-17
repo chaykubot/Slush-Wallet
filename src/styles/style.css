@@ -49,8 +49,8 @@ select { width: 100%; background: var(--surface); color: var(--text); border: 1p
 
 /* presets */
 .presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-.preset { height: 34px; min-width: 0; padding: 0; border: 1px solid rgba(10,10,11,0.1); border-radius: 9px; cursor: pointer; transition: transform .1s; }
-.preset:hover { transform: scale(1.05); border-color: rgba(10,10,11,0.3); }
+.preset { height: 34px; min-width: 0; padding: 0; border: none; border-radius: 10px; cursor: pointer; transition: transform .1s; }
+.preset:hover { transform: scale(1.05); }
 
 /* swatches */
 .swatch-grid { display: flex; flex-direction: column; gap: 4px; }
