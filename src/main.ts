@@ -2,6 +2,7 @@ import './styles/style.css';
 import { byId, dom } from './dom';
 import { SLIDER_IDS } from './constants';
 import { initStops, renderStops } from './ui/stops';
+import { initPresets } from './ui/presets';
 import { initBrandSwatches } from './ui/brandSwatches';
 import { initCssSnapshot, updateCSS } from './ui/cssSnapshot';
 import { applyGradType, initControls } from './ui/controls';
@@ -11,6 +12,7 @@ import { loop, resize } from './render/renderer';
 
 // Attach event listeners.
 initStops();
+initPresets();
 initBrandSwatches();
 initCssSnapshot();
 initControls();
