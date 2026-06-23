@@ -1,5 +1,6 @@
 import { byId } from '../dom';
 import { state } from '../state';
+import { MAX_STOPS } from '../constants';
 import { BRAND_RAMPS } from '../brandColors';
 import { makeGrain } from '../render/grain';
 import { renderStops } from './stops';
@@ -17,6 +18,7 @@ export function initBrandSwatches(): void {
       chip.style.background = c;
       chip.title = `${ramp.name} · ${c}`;
       chip.addEventListener('click', () => {
+        if (state.stops.length >= MAX_STOPS) return;
         state.stops.push(c);
         renderStops();
         updateCSS();

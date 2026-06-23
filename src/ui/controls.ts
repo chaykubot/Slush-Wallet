@@ -32,13 +32,30 @@ export function initControls(): void {
     });
   });
 
+  // Grain presets set Amount + Size; manual slider edits clear the active preset.
+  const clearGrainPreset = () => {
+    dom.grainFine.classList.remove('active');
+    dom.grainCoarse.classList.remove('active');
+  };
+  const applyGrainPreset = (btn: HTMLButtonElement, amount: number, size: number) => {
+    dom.grainAmt.value = String(amount);
+    dom.grainSize.value = String(size);
+    dom.grainAmt.dispatchEvent(new Event('input'));
+    dom.grainSize.dispatchEvent(new Event('input'));
+    btn.classList.add('active');
+  };
+  dom.grainFine.addEventListener('click', () => applyGrainPreset(dom.grainFine, 45, 1));
+  dom.grainCoarse.addEventListener('click', () => applyGrainPreset(dom.grainCoarse, 55, 2));
+
   // Grain sliders re-roll the grain layer.
   dom.grainAmt.addEventListener('input', () => {
     byId('grain-v').textContent = dom.grainAmt.value;
+    clearGrainPreset();
     makeGrain();
   });
   dom.grainSize.addEventListener('input', () => {
     byId('grain-size-v').textContent = dom.grainSize.value;
+    clearGrainPreset();
     makeGrain();
   });
 
@@ -48,19 +65,6 @@ export function initControls(): void {
     dom.grain.style.opacity = state.grainOn ? '1' : '0';
     if (state.grainOn) makeGrain();
     else gCtx.clearRect(0, 0, dom.grain.width, dom.grain.height);
-  });
-
-  dom.modeMono.addEventListener('click', () => {
-    state.grainColor = false;
-    dom.modeMono.classList.add('active');
-    dom.modeColor.classList.remove('active');
-    makeGrain();
-  });
-  dom.modeColor.addEventListener('click', () => {
-    state.grainColor = true;
-    dom.modeColor.classList.add('active');
-    dom.modeMono.classList.remove('active');
-    makeGrain();
   });
 
   dom.playBtn.addEventListener('click', () => {

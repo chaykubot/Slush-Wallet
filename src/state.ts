@@ -6,7 +6,6 @@ export const state = {
   gradType: 'radial-h' as GradientType,
   playing: true,
   grainOn: true,
-  grainColor: true,
   /** Animation clock, advanced every frame by the loop. */
   t: 0,
   /** Main canvas dimensions in CSS pixels. */

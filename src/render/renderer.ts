@@ -53,7 +53,10 @@ export function drawGradient(): void {
   // Offset pans the crop zone: -100 = left/top edge, 0 = centre, 100 = right/bottom edge.
   const panX = (ow - drawW) / 2 * (1 + offX);
   const panY = (oh - drawH) / 2 * (1 + offY);
-  ctx.drawImage(result, panX, panY, drawW, drawH, 0, 0, W, H);
+  // Overscan the destination by the blur radius so the blur kernel never samples
+  // the transparent area outside the canvas — that's what darkened the corners.
+  const over = blurPx * 2;
+  ctx.drawImage(result, panX, panY, drawW, drawH, -over, -over, W + over * 2, H + over * 2);
   ctx.filter = 'none';
 }
 

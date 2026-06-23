@@ -16,22 +16,15 @@ export function paintGrain(ctx: CanvasRenderingContext2D, w: number, h: number, 
   const d = id.data;
   const amt = +dom.grainAmt.value / 100;
 
-  if (state.grainColor) {
-    const rgbs = state.stops.map(hexToRgb);
-    for (let i = 0; i < d.length; i += 4) {
-      const col = rgbs[Math.floor(Math.random() * rgbs.length)];
-      const n = (Math.random() - 0.5) * 255 * amt * 2.5;
-      d[i] = Math.max(0, Math.min(255, col[0] + n));
-      d[i + 1] = Math.max(0, Math.min(255, col[1] + n));
-      d[i + 2] = Math.max(0, Math.min(255, col[2] + n));
-      d[i + 3] = Math.round(140 * amt * (0.4 + Math.random() * 0.6));
-    }
-  } else {
-    for (let i = 0; i < d.length; i += 4) {
-      const v = 128 + (Math.random() - 0.5) * 255 * amt * 2;
-      d[i] = d[i + 1] = d[i + 2] = v;
-      d[i + 3] = Math.round(150 * amt);
-    }
+  // Colour-mix grain: each speck takes a random stop colour plus brightness noise.
+  const rgbs = state.stops.map(hexToRgb);
+  for (let i = 0; i < d.length; i += 4) {
+    const col = rgbs[Math.floor(Math.random() * rgbs.length)];
+    const n = (Math.random() - 0.5) * 255 * amt * 2.5;
+    d[i] = Math.max(0, Math.min(255, col[0] + n));
+    d[i + 1] = Math.max(0, Math.min(255, col[1] + n));
+    d[i + 2] = Math.max(0, Math.min(255, col[2] + n));
+    d[i + 3] = Math.round(140 * amt * (0.4 + Math.random() * 0.6));
   }
 
   const tmpC = document.createElement('canvas');

@@ -1,5 +1,6 @@
 import { dom } from '../dom';
 import { state } from '../state';
+import { MAX_STOPS, MIN_STOPS } from '../constants';
 import { randomHex } from '../utils/color';
 import { makeGrain } from '../render/grain';
 import { updateCSS } from './cssSnapshot';
@@ -44,6 +45,7 @@ export function renderStops(): void {
     const del = document.createElement('button');
     del.className = 'stop-del';
     del.innerHTML = '×';
+    del.disabled = state.stops.length <= MIN_STOPS;
 
     picker.addEventListener('input', (e) => {
       const v = (e.target as HTMLInputElement).value;
@@ -62,7 +64,7 @@ export function renderStops(): void {
       }
     });
     del.addEventListener('click', () => {
-      if (state.stops.length <= 2) return;
+      if (state.stops.length <= MIN_STOPS) return;
       state.stops.splice(i, 1);
       renderStops();
       updateCSS();
@@ -91,11 +93,14 @@ export function renderStops(): void {
     row.append(grip, picker, hex, del);
     dom.stopsList.appendChild(row);
   });
+
+  dom.addStop.disabled = state.stops.length >= MAX_STOPS;
 }
 
 /** Wire the "add stop" button. */
 export function initStops(): void {
   dom.addStop.addEventListener('click', () => {
+    if (state.stops.length >= MAX_STOPS) return;
     state.stops.push(randomHex());
     renderStops();
     updateCSS();

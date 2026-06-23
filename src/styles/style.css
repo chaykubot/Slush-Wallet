@@ -44,8 +44,12 @@ select { width: 100%; background: var(--surface); color: var(--text); border: 1p
 .stop-hex { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 12px; font-family: 'GT America Mono', monospace; padding: 7px 9px; min-width: 0; box-shadow: 0 1px 2px rgba(10,10,11,0.04); }
 .stop-del { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 5px; }
 .stop-del:hover { background: rgba(10,10,11,0.06); color: var(--text); }
+.stop-del:disabled { opacity: .25; cursor: default; }
+.stop-del:disabled:hover { background: none; color: var(--muted); }
 .add-stop { background: none; border: 1px dashed var(--border); border-radius: 8px; color: var(--muted); font-size: 12px; padding: 8px 10px; cursor: pointer; width: 100%; text-align: left; margin-top: 6px; }
 .add-stop:hover { background: rgba(10,10,11,0.03); color: var(--text); }
+.add-stop:disabled { opacity: .4; cursor: default; }
+.add-stop:disabled:hover { background: none; color: var(--muted); }
 
 /* presets */
 .presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }

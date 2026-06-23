@@ -1,6 +1,10 @@
 /** Render the gradient at 35% resolution, then upscale — fast and still smooth. */
 export const OFF_SCALE = 0.35;
 
+/** Allowed range for the number of colour stops. */
+export const MIN_STOPS = 3;
+export const MAX_STOPS = 6;
+
 /** Sliders that share the same wiring: update their value label + the CSS snapshot. */
 export const SLIDER_IDS = [
   'speed',
