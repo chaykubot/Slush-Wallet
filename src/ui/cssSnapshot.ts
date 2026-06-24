@@ -1,9 +1,10 @@
 import { dom } from '../dom';
 import { state } from '../state';
+import { blobSizeActual } from '../settings';
 
 /** Regenerate the CSS snapshot text for the current gradient type + stops. */
 export function updateCSS(): void {
-  const sc = +dom.blobsize.value;
+  const sc = blobSizeActual();
   const { gradType, stops } = state;
   let css: string;
 

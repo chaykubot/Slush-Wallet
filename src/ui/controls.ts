@@ -15,6 +15,11 @@ export function applyGradType(): void {
   dom.swirlSec.style.display = state.gradType === 'mesh' ? '' : 'none';
   dom.stretchSec.style.display = isWave ? '' : 'none';
   dom.blobsizeLabel.textContent = isWave ? 'Wave amplitude' : 'Blob size';
+
+  // Mesh allows larger blobs (UI 0-40 = actual 50-90); other types cap at 25.
+  // Setting `max` auto-clamps the value in the browser, so just resync the label.
+  dom.blobsize.max = state.gradType === 'mesh' ? '40' : '25';
+  byId('blobsize-v').textContent = dom.blobsize.value;
   updateCSS();
 }
 

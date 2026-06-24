@@ -2,6 +2,7 @@ import { dom } from '../dom';
 import { ctx, offC } from '../canvas';
 import { state } from '../state';
 import { OFF_SCALE } from '../constants';
+import { blobSizeActual, softnessActual, stretchActual, swirlActual } from '../settings';
 import { drawMeshBlobs } from './mesh';
 import { applySwirl } from './swirl';
 import { drawWave } from './wave';
@@ -12,12 +13,12 @@ import { drawRadial } from './radial';
  * to the visible canvas applying zoom, offset (pan) and softness (blur).
  */
 export function drawGradient(): void {
-  const blobSc = +dom.blobsize.value / 100;
-  const swirlAmt = +dom.swirl.value / 100;
+  const blobSc = blobSizeActual() / 100;
+  const swirlAmt = swirlActual() / 100;
   const zoom = +dom.zoom.value / 100;
   const offX = +dom.offx.value / 100;
   const offY = +dom.offy.value / 100;
-  const blurPx = +dom.blur.value;
+  const blurPx = softnessActual();
 
   const ow = offC.width, oh = offC.height;
   if (ow === 0 || oh === 0) return;
@@ -43,7 +44,7 @@ export function drawGradient(): void {
   // horizontally, Wave-V vertically.
   const isWaveH = state.gradType === 'wave-h';
   const isWaveV = state.gradType === 'wave-v';
-  const stretch = isWaveH || isWaveV ? +dom.stretch.value / 100 : 1;
+  const stretch = isWaveH || isWaveV ? stretchActual() / 100 : 1;
 
   const { W, H } = state;
   ctx.clearRect(0, 0, W, H);
