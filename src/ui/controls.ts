@@ -8,6 +8,23 @@ import { makeGrain } from '../render/grain';
 import { renderStops } from './stops';
 import { updateCSS } from './cssSnapshot';
 
+/** Default slider values (UI scale) loaded when switching to each gradient type. */
+const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
+  'radial-h': { speed: 3, blobsize: 10, zoom: 100, offx: 0, offy: 0, blur: 10 },
+  'radial-v': { speed: 3, blobsize: 10, zoom: 100, offx: 0, offy: 0, blur: 10 },
+  'wave-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 130, offx: 0, offy: 0, blur: 10 },
+  'wave-v': { speed: 3, blobsize: 10, stretch: 10, zoom: 130, offx: 0, offy: 0, blur: 10 },
+  'mesh': { speed: 3, blobsize: 10, swirl: 0, zoom: 150, offx: 0, offy: 0, blur: 10 },
+};
+
+function applyTypeDefaults(defaults: Record<string, number>): void {
+  for (const [id, value] of Object.entries(defaults)) {
+    const input = byId<HTMLInputElement>(id);
+    input.value = String(value);
+    byId(`${id}-v`).textContent = input.value;
+  }
+}
+
 /** Sync UI to the selected gradient type: show/hide swirl, relabel blob size. */
 export function applyGradType(): void {
   state.gradType = dom.gradType.value as GradientType;
@@ -23,9 +40,16 @@ export function applyGradType(): void {
   updateCSS();
 }
 
+/** Switching gradient type loads that type's default slider settings. */
+function onGradTypeChange(): void {
+  applyGradType();
+  applyTypeDefaults(TYPE_DEFAULTS[state.gradType]);
+  updateCSS();
+}
+
 /** Attach all control listeners (sliders, grain, playback, actions, resize). */
 export function initControls(): void {
-  dom.gradType.addEventListener('change', applyGradType);
+  dom.gradType.addEventListener('change', onGradTypeChange);
 
   // Sliders that update a value label and the CSS snapshot.
   SLIDER_IDS.forEach((id) => {
