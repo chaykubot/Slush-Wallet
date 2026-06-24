@@ -2,22 +2,20 @@ import { offCtx } from '../canvas';
 import { state } from '../state';
 
 /**
- * Concentric colour bands radiating from the bottom edge (vertical) or the left
- * edge (horizontal). The whole emitter drifts smoothly along both axes so the
- * bands translate together (in unison) — a flowing motion rather than a pulse.
+ * Concentric colour bands radiating from the left edge (horizontal) or the
+ * bottom edge (vertical). The emitter drifts smoothly along a single axis so the
+ * bands translate together — horizontal moves only horizontally, vertical only
+ * vertically.
  */
 export function drawRadial(ow: number, oh: number, blobSc: number, horizontal: boolean): void {
   const { stops, t } = state;
   const n = stops.length;
 
-  // Two slow, out-of-phase drifts so the centre wanders on a gentle path.
-  const driftA = Math.sin(t * 0.3);
-  const driftB = Math.sin(t * 0.21 + 1.3);
-
-  // Vertical bands sway left-right (primary) and bob up-down (secondary);
-  // horizontal bands do the opposite. The emitter sits off-frame either way.
-  const cx = horizontal ? -ow * 0.08 + ow * 0.05 * driftB : ow / 2 + ow * 0.12 * driftA;
-  const cy = horizontal ? oh / 2 + oh * 0.12 * driftA : oh * 1.08 + oh * 0.05 * driftB;
+  const drift = Math.sin(t * 0.3);
+  // Horizontal: emitter off the left edge, drifts left-right only (cy fixed).
+  // Vertical:   emitter off the bottom edge, drifts up-down only (cx fixed).
+  const cx = horizontal ? -ow * 0.08 + ow * 0.1 * drift : ow / 2;
+  const cy = horizontal ? oh / 2 : oh * 1.08 + oh * 0.1 * drift;
 
   // Farthest corner from the centre — bands must reach the whole canvas.
   const farthest = Math.sqrt(Math.max(cx, ow - cx) ** 2 + Math.max(cy, oh - cy) ** 2);
