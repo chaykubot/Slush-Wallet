@@ -1,5 +1,5 @@
 import './styles/style.css';
-import { byId, dom } from './dom';
+import { byId } from './dom';
 import { SLIDER_IDS } from './constants';
 import { initStops, renderStops } from './ui/stops';
 import { initPresets } from './ui/presets';
@@ -25,8 +25,9 @@ renderStops();
 SLIDER_IDS.forEach((id) => {
   byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
 });
-byId('grain-v').textContent = dom.grainAmt.value;
-byId('grain-size-v').textContent = dom.grainSize.value;
+['grain-size', 'grain-density', 'grain-opacity', 'grain-color'].forEach((id) => {
+  byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
+});
 applyGradType();
 updateCSS();
 makeGrain();

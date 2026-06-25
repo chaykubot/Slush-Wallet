@@ -10,21 +10,26 @@ import { hexToRgb } from '../utils/color';
  * resolution than the live canvas (e.g. 2 for a 2× export).
  */
 export function paintGrain(ctx: CanvasRenderingContext2D, w: number, h: number, pxScale = 1): void {
-  const px = Math.max(1, Math.round(+dom.grainSize.value * pxScale)); // speck size in px
+  const px = Math.max(1, Math.round(+dom.grainSize.value * pxScale)); // speck block size in px
   const bw = Math.ceil(w / px), bh = Math.ceil(h / px);
   const id = ctx.createImageData(bw, bh);
   const d = id.data;
-  const amt = +dom.grainAmt.value / 100;
+  const density = +dom.grainDensity.value / 100; // fraction of cells that get a speck
+  const opacity = +dom.grainOpacity.value / 100; // per-speck alpha strength
+  const chroma = +dom.grainColor.value / 100;    // 1 = full palette colour, 0 = grayscale
 
-  // Colour-mix grain: each speck takes a random stop colour plus brightness noise.
+  // Stippled colour grain: only some cells get a speck (the rest stay transparent,
+  // leaving gaps). Each speck takes a random stop colour plus brightness variation.
   const rgbs = state.stops.map(hexToRgb);
   for (let i = 0; i < d.length; i += 4) {
+    if (Math.random() >= density) continue; // gap — leave this cell transparent
     const col = rgbs[Math.floor(Math.random() * rgbs.length)];
-    const n = (Math.random() - 0.5) * 255 * amt * 2.5;
-    d[i] = Math.max(0, Math.min(255, col[0] + n));
-    d[i + 1] = Math.max(0, Math.min(255, col[1] + n));
-    d[i + 2] = Math.max(0, Math.min(255, col[2] + n));
-    d[i + 3] = Math.round(140 * amt * (0.4 + Math.random() * 0.6));
+    const n = (Math.random() - 0.5) * 120; // brightness variation; keeps the hue
+    const gray = 0.299 * col[0] + 0.587 * col[1] + 0.114 * col[2];
+    d[i] = Math.max(0, Math.min(255, gray + (col[0] - gray) * chroma + n));
+    d[i + 1] = Math.max(0, Math.min(255, gray + (col[1] - gray) * chroma + n));
+    d[i + 2] = Math.max(0, Math.min(255, gray + (col[2] - gray) * chroma + n));
+    d[i + 3] = Math.round(255 * opacity * (0.55 + 0.45 * Math.random()));
   }
 
   const tmpC = document.createElement('canvas');
