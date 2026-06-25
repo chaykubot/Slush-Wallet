@@ -22,6 +22,7 @@ export const dom = {
   grainToggle: byId<HTMLButtonElement>('grain-toggle'),
   grainFine: byId<HTMLButtonElement>('grain-fine'),
   grainCoarse: byId<HTMLButtonElement>('grain-coarse'),
+  grainSharp: byId<HTMLButtonElement>('grain-sharp'),
   grainAmt: byId<HTMLInputElement>('grain-amt'),
   grainSize: byId<HTMLInputElement>('grain-size'),
   speed: byId<HTMLInputElement>('speed'),

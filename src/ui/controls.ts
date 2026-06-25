@@ -67,6 +67,7 @@ export function initControls(): void {
   const clearGrainPreset = () => {
     dom.grainFine.classList.remove('active');
     dom.grainCoarse.classList.remove('active');
+    dom.grainSharp.classList.remove('active');
   };
   const applyGrainPreset = (btn: HTMLButtonElement, amount: number, size: number) => {
     dom.grainAmt.value = String(amount);
@@ -77,6 +78,7 @@ export function initControls(): void {
   };
   dom.grainFine.addEventListener('click', () => applyGrainPreset(dom.grainFine, 45, 1));
   dom.grainCoarse.addEventListener('click', () => applyGrainPreset(dom.grainCoarse, 55, 2));
+  dom.grainSharp.addEventListener('click', () => applyGrainPreset(dom.grainSharp, 65, 1));
 
   // Grain sliders re-roll the grain layer.
   dom.grainAmt.addEventListener('input', () => {
