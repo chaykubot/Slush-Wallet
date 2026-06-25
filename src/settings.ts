@@ -1,4 +1,10 @@
 import { dom } from './dom';
+import { state } from './state';
+
+/** Canvas composite op for the grain layer, matching its CSS mix-blend-mode. */
+export function grainCompositeOp(): GlobalCompositeOperation {
+  return (state.grainBlend === 'normal' ? 'source-over' : state.grainBlend) as GlobalCompositeOperation;
+}
 
 /**
  * The sliders display logical, 0-based values; these map them to the actual

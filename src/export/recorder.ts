@@ -1,6 +1,7 @@
 import { dom } from '../dom';
 import { state } from '../state';
 import { loop, setFrameHook } from '../render/renderer';
+import { grainCompositeOp } from '../settings';
 
 /** Codec preference: MP4 (Safari) first, then WebM (Chrome/Firefox). */
 const MIME_CANDIDATES = [
@@ -62,7 +63,7 @@ export function startRecording(): void {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(dom.gc, 0, 0);
     if (state.grainOn) {
-      ctx.globalCompositeOperation = 'overlay';
+      ctx.globalCompositeOperation = grainCompositeOp();
       ctx.drawImage(dom.grain, 0, 0);
       ctx.globalCompositeOperation = 'source-over';
     }

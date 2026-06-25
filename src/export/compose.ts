@@ -1,6 +1,7 @@
 import { dom } from '../dom';
 import { state } from '../state';
 import { paintGrain } from '../render/grain';
+import { grainCompositeOp } from '../settings';
 
 /**
  * Composite the current visible frame (gradient + grain overlay) into a target
@@ -22,7 +23,7 @@ export function composite(target: HTMLCanvasElement, scale: number): CanvasRende
     grain.width = w;
     grain.height = h;
     paintGrain(grain.getContext('2d')!, w, h, scale);
-    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalCompositeOperation = grainCompositeOp();
     ctx.drawImage(grain, 0, 0);
     ctx.globalCompositeOperation = 'source-over';
   }

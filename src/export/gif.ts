@@ -3,6 +3,7 @@ import { dom } from '../dom';
 import { state } from '../state';
 import { drawGradient, loop } from '../render/renderer';
 import { paintGrain } from '../render/grain';
+import { grainCompositeOp } from '../settings';
 
 const FPS = 15;
 const MAX_SIDE = 480; // cap the longest side to keep GIF file size reasonable
@@ -53,7 +54,7 @@ export async function exportGIF(durationSec: number, onProgress?: (p: number) =>
     fctx.clearRect(0, 0, gw, gh);
     fctx.drawImage(dom.gc, 0, 0, gw, gh);
     if (grain) {
-      fctx.globalCompositeOperation = 'overlay';
+      fctx.globalCompositeOperation = grainCompositeOp();
       fctx.drawImage(grain, 0, 0);
       fctx.globalCompositeOperation = 'source-over';
     }

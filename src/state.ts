@@ -6,6 +6,8 @@ export const state = {
   gradType: 'radial-h' as GradientType,
   playing: true,
   grainOn: true,
+  /** Grain blend mode (CSS mix-blend-mode value); 'normal' maps to source-over on export. */
+  grainBlend: 'hard-light',
   /** Animation clock, advanced every frame by the loop. */
   t: 0,
   /** Main canvas dimensions in CSS pixels. */

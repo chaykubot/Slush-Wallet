@@ -76,6 +76,14 @@ export function initControls(): void {
     dom.grainSize.dispatchEvent(new Event('input'));
     btn.classList.add('active');
   };
+  // Grain blend mode — keep the live canvas in sync (exports read state directly).
+  dom.grain.style.mixBlendMode = state.grainBlend;
+  dom.grainBlend.value = state.grainBlend;
+  dom.grainBlend.addEventListener('change', () => {
+    state.grainBlend = dom.grainBlend.value;
+    dom.grain.style.mixBlendMode = state.grainBlend;
+  });
+
   dom.grainFine.addEventListener('click', () => applyGrainPreset(dom.grainFine, 45, 1));
   dom.grainCoarse.addEventListener('click', () => applyGrainPreset(dom.grainCoarse, 55, 2));
   dom.grainSharp.addEventListener('click', () => applyGrainPreset(dom.grainSharp, 65, 1));

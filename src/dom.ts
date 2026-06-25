@@ -25,6 +25,7 @@ export const dom = {
   grainSharp: byId<HTMLButtonElement>('grain-sharp'),
   grainAmt: byId<HTMLInputElement>('grain-amt'),
   grainSize: byId<HTMLInputElement>('grain-size'),
+  grainBlend: byId<HTMLSelectElement>('grain-blend'),
   speed: byId<HTMLInputElement>('speed'),
   blobsize: byId<HTMLInputElement>('blobsize'),
   swirl: byId<HTMLInputElement>('swirl'),
