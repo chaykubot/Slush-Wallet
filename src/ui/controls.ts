@@ -6,6 +6,7 @@ import type { GradientType } from '../types';
 import { loop, resize } from '../render/renderer';
 import { makeGrain } from '../render/grain';
 import { renderStops } from './stops';
+import { renderPresets } from './presets';
 import { updateCSS } from './cssSnapshot';
 
 /** Default slider values (UI scale) loaded when switching to each gradient type. */
@@ -40,10 +41,11 @@ export function applyGradType(): void {
   updateCSS();
 }
 
-/** Switching gradient type loads that type's default slider settings. */
+/** Switching gradient type loads that type's default sliders + preset set. */
 function onGradTypeChange(): void {
   applyGradType();
   applyTypeDefaults(TYPE_DEFAULTS[state.gradType]);
+  renderPresets();
   updateCSS();
 }
 
