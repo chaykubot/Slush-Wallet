@@ -34,13 +34,14 @@ export async function exportGIF(durationSec: number, onProgress?: (p: number) =>
   frame.height = gh;
   const fctx = frame.getContext('2d', { willReadFrequently: true })!;
 
-  // One static grain layer at GIF resolution, reused for every frame.
+  // One static grain layer at GIF resolution — gradient-independent, so it
+  // composites identically over every frame.
   let grain: HTMLCanvasElement | null = null;
   if (state.grainOn) {
     grain = document.createElement('canvas');
     grain.width = gw;
     grain.height = gh;
-    paintGrain(grain.getContext('2d')!, gw, gh, sc);
+    paintGrain(grain.getContext('2d')!, gw, gh);
   }
 
   const enc = GIFEncoder();

@@ -4,7 +4,7 @@ import { state } from '../state';
 import { PALETTES, SLIDER_IDS } from '../constants';
 import type { GradientType } from '../types';
 import { loop, resize } from '../render/renderer';
-import { makeGrain } from '../render/grain';
+import { makeGrain, requestGrain } from '../render/grain';
 import { renderStops } from './stops';
 import { renderPresets } from './presets';
 import { updateCSS } from './cssSnapshot';
@@ -63,44 +63,34 @@ export function initControls(): void {
     });
   });
 
-  // Grain blend mode — keep the live canvas in sync (exports read state directly).
-  dom.grain.style.mixBlendMode = state.grainBlend;
-  dom.grainBlend.value = state.grainBlend;
-  dom.grainBlend.addEventListener('change', () => {
-    state.grainBlend = dom.grainBlend.value;
-    dom.grain.style.mixBlendMode = state.grainBlend;
-  });
-
-  // Grain presets set all four sliders; manual edits clear the active preset.
+  // Grain presets set scale / strength / contrast; manual edits clear the preset.
   const grainBtns = [dom.grainFine, dom.grainCoarse, dom.grainSharp];
   const clearGrainPreset = () => grainBtns.forEach((b) => b.classList.remove('active'));
   const applyGrainPreset = (
     btn: HTMLButtonElement,
-    size: number,
-    density: number,
-    opacity: number,
-    color: number,
+    scale: number,
+    strength: number,
+    contrast: number,
   ) => {
-    dom.grainSize.value = String(size);
-    dom.grainDensity.value = String(density);
-    dom.grainOpacity.value = String(opacity);
-    dom.grainColor.value = String(color);
-    [dom.grainSize, dom.grainDensity, dom.grainOpacity, dom.grainColor]
+    dom.grainScale.value = String(scale);
+    dom.grainStrength.value = String(strength);
+    dom.grainContrast.value = String(contrast);
+    [dom.grainScale, dom.grainStrength, dom.grainContrast]
       .forEach((s) => s.dispatchEvent(new Event('input')));
     btn.classList.add('active');
   };
-  dom.grainFine.addEventListener('click', () => applyGrainPreset(dom.grainFine, 1, 65, 45, 75));
-  dom.grainCoarse.addEventListener('click', () => applyGrainPreset(dom.grainCoarse, 3, 28, 85, 100));
-  dom.grainSharp.addEventListener('click', () => applyGrainPreset(dom.grainSharp, 2, 25, 85, 100));
+  dom.grainFine.addEventListener('click', () => applyGrainPreset(dom.grainFine, 1000, 90, 120));
+  dom.grainCoarse.addEventListener('click', () => applyGrainPreset(dom.grainCoarse, 280, 130, 160));
+  dom.grainSharp.addEventListener('click', () => applyGrainPreset(dom.grainSharp, 500, 100, 130));
 
   // Grain sliders: update label, clear the active preset, and re-roll the grain.
-  (['grain-size', 'grain-density', 'grain-opacity', 'grain-color'] as const).forEach((id) => {
+  (['grain-scale', 'grain-strength', 'grain-contrast'] as const).forEach((id) => {
     const input = byId<HTMLInputElement>(id);
     const label = byId(`${id}-v`);
     input.addEventListener('input', () => {
       label.textContent = input.value;
       clearGrainPreset();
-      makeGrain();
+      requestGrain();
     });
   });
 

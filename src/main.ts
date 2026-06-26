@@ -25,7 +25,7 @@ renderStops();
 SLIDER_IDS.forEach((id) => {
   byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
 });
-['grain-size', 'grain-density', 'grain-opacity', 'grain-color'].forEach((id) => {
+['grain-scale', 'grain-strength', 'grain-contrast'].forEach((id) => {
   byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
 });
 applyGradType();

@@ -22,7 +22,7 @@ export function composite(target: HTMLCanvasElement, scale: number): CanvasRende
     const grain = document.createElement('canvas');
     grain.width = w;
     grain.height = h;
-    paintGrain(grain.getContext('2d')!, w, h, scale);
+    paintGrain(grain.getContext('2d')!, w, h);
     ctx.globalCompositeOperation = grainCompositeOp();
     ctx.drawImage(grain, 0, 0);
     ctx.globalCompositeOperation = 'source-over';
