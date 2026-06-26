@@ -63,33 +63,12 @@ export function initControls(): void {
     });
   });
 
-  // Grain presets set scale / strength / contrast; manual edits clear the preset.
-  const grainBtns = [dom.grainFine, dom.grainCoarse, dom.grainSharp];
-  const clearGrainPreset = () => grainBtns.forEach((b) => b.classList.remove('active'));
-  const applyGrainPreset = (
-    btn: HTMLButtonElement,
-    scale: number,
-    strength: number,
-    contrast: number,
-  ) => {
-    dom.grainScale.value = String(scale);
-    dom.grainStrength.value = String(strength);
-    dom.grainContrast.value = String(contrast);
-    [dom.grainScale, dom.grainStrength, dom.grainContrast]
-      .forEach((s) => s.dispatchEvent(new Event('input')));
-    btn.classList.add('active');
-  };
-  dom.grainFine.addEventListener('click', () => applyGrainPreset(dom.grainFine, 1000, 90, 120));
-  dom.grainCoarse.addEventListener('click', () => applyGrainPreset(dom.grainCoarse, 280, 130, 160));
-  dom.grainSharp.addEventListener('click', () => applyGrainPreset(dom.grainSharp, 500, 100, 130));
-
-  // Grain sliders: update label, clear the active preset, and re-roll the grain.
+  // Grain sliders: update label and re-roll the grain.
   (['grain-scale', 'grain-strength', 'grain-contrast'] as const).forEach((id) => {
     const input = byId<HTMLInputElement>(id);
     const label = byId(`${id}-v`);
     input.addEventListener('input', () => {
       label.textContent = input.value;
-      clearGrainPreset();
       requestGrain();
     });
   });
