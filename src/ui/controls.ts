@@ -1,10 +1,8 @@
 import { byId, dom } from '../dom';
-import { gCtx } from '../canvas';
 import { state } from '../state';
 import { PALETTES, SLIDER_IDS } from '../constants';
 import type { GradientType } from '../types';
-import { loop, resize } from '../render/renderer';
-import { makeGrain, requestGrain } from '../render/grain';
+import { loop, resize, drawGradient } from '../render/renderer';
 import { renderStops } from './stops';
 import { renderPresets } from './presets';
 import { updateCSS } from './cssSnapshot';
@@ -63,22 +61,15 @@ export function initControls(): void {
     });
   });
 
-  // Grain sliders: update label and re-roll the grain.
-  (['grain-scale', 'grain-strength', 'grain-contrast'] as const).forEach((id) => {
+  // Colour-mix grain displaces the gradient itself (per-frame in the loop), so
+  // it just needs a redraw to show up while paused.
+  (['grain-mix', 'grain-mix-scale'] as const).forEach((id) => {
     const input = byId<HTMLInputElement>(id);
     const label = byId(`${id}-v`);
     input.addEventListener('input', () => {
       label.textContent = input.value;
-      requestGrain();
+      drawGradient();
     });
-  });
-
-  dom.grainToggle.addEventListener('click', () => {
-    state.grainOn = !state.grainOn;
-    dom.grainToggle.classList.toggle('on', state.grainOn);
-    dom.grain.style.opacity = state.grainOn ? '1' : '0';
-    if (state.grainOn) makeGrain();
-    else gCtx.clearRect(0, 0, dom.grain.width, dom.grain.height);
   });
 
   dom.playBtn.addEventListener('click', () => {
@@ -92,11 +83,11 @@ export function initControls(): void {
     state.stops = [...PALETTES[Math.floor(Math.random() * PALETTES.length)]];
     renderStops();
     updateCSS();
-    makeGrain();
+    drawGradient();
   });
 
   window.addEventListener('resize', () => {
     resize();
-    makeGrain();
+    drawGradient();
   });
 }

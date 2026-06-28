@@ -7,7 +7,6 @@ import { initBrandSwatches } from './ui/brandSwatches';
 import { initCssSnapshot, updateCSS } from './ui/cssSnapshot';
 import { applyGradType, initControls } from './ui/controls';
 import { initExportControls } from './ui/exportControls';
-import { makeGrain } from './render/grain';
 import { loop, resize } from './render/renderer';
 
 // Attach event listeners.
@@ -25,10 +24,9 @@ renderStops();
 SLIDER_IDS.forEach((id) => {
   byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
 });
-['grain-scale', 'grain-strength', 'grain-contrast'].forEach((id) => {
+['grain-mix', 'grain-mix-scale'].forEach((id) => {
   byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
 });
 applyGradType();
 updateCSS();
-makeGrain();
 loop();

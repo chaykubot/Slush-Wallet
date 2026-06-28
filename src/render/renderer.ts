@@ -1,9 +1,10 @@
 import { dom } from '../dom';
-import { ctx, offC } from '../canvas';
+import { ctx, offC, mixC, mixCtx } from '../canvas';
 import { state } from '../state';
 import { OFF_SCALE } from '../constants';
 import { blobSizeActual, softnessActual, stretchActual, swirlActual } from '../settings';
 import { drawMeshBlobs } from './mesh';
+import { applyMixerGrain } from './mixerGrain';
 import { applySwirl } from './swirl';
 import { drawWave } from './wave';
 import { drawRadial } from './radial';
@@ -47,8 +48,14 @@ export function drawGradient(): void {
   const stretch = isWaveH || isWaveV ? stretchActual() / 100 : 1;
 
   const { W, H } = state;
-  ctx.clearRect(0, 0, W, H);
-  ctx.filter = blurPx > 0 ? `blur(${blurPx}px)` : 'none';
+  // Colour-mix grain dithers the gradient at full display resolution so it stays
+  // crisp (the 35% offscreen + blur would otherwise smear it away). When active,
+  // upscale + blur into the full-res mix buffer, dither it, then copy to the
+  // visible canvas. When off, blit straight to the visible canvas — no extra cost.
+  const mixOn = +dom.grainMix.value > 0;
+  const target = mixOn ? mixCtx : ctx;
+  target.clearRect(0, 0, W, H);
+  target.filter = blurPx > 0 ? `blur(${blurPx}px)` : 'none';
   const drawW = ow / zoom / (isWaveH ? stretch : 1);
   const drawH = oh / zoom / (isWaveV ? stretch : 1);
   // Offset pans the crop zone: -100 = left/top edge, 0 = centre, 100 = right/bottom edge.
@@ -57,8 +64,14 @@ export function drawGradient(): void {
   // Overscan the destination by the blur radius so the blur kernel never samples
   // the transparent area outside the canvas — that's what darkened the corners.
   const over = blurPx * 2;
-  ctx.drawImage(result, panX, panY, drawW, drawH, -over, -over, W + over * 2, H + over * 2);
-  ctx.filter = 'none';
+  target.drawImage(result, panX, panY, drawW, drawH, -over, -over, W + over * 2, H + over * 2);
+  target.filter = 'none';
+
+  if (mixOn) {
+    applyMixerGrain(mixC);
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(mixC, 0, 0);
+  }
 }
 
 /** Match canvas sizes to the preview area and resize the offscreen buffer. */
@@ -68,8 +81,8 @@ export function resize(): void {
   state.H = wrap.offsetHeight;
   dom.gc.width = state.W;
   dom.gc.height = state.H;
-  dom.grain.width = state.W;
-  dom.grain.height = state.H;
+  mixC.width = state.W;
+  mixC.height = state.H;
   offC.width = Math.round(state.W * OFF_SCALE);
   offC.height = Math.round(state.H * OFF_SCALE);
 }

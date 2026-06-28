@@ -2,7 +2,6 @@ import { byId } from '../dom';
 import { state } from '../state';
 import { MAX_STOPS } from '../constants';
 import { BRAND_RAMPS } from '../brandColors';
-import { makeGrain } from '../render/grain';
 import { renderStops } from './stops';
 import { updateCSS } from './cssSnapshot';
 
@@ -22,7 +21,6 @@ export function initBrandSwatches(): void {
         state.stops.push(c);
         renderStops();
         updateCSS();
-        makeGrain();
       });
       row.appendChild(chip);
     });

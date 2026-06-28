@@ -2,8 +2,6 @@ import { GIFEncoder, quantize, applyPalette } from 'gifenc';
 import { dom } from '../dom';
 import { state } from '../state';
 import { drawGradient, loop } from '../render/renderer';
-import { paintGrain } from '../render/grain';
-import { grainCompositeOp } from '../settings';
 
 const FPS = 15;
 const MAX_SIDE = 480; // cap the longest side to keep GIF file size reasonable
@@ -34,16 +32,6 @@ export async function exportGIF(durationSec: number, onProgress?: (p: number) =>
   frame.height = gh;
   const fctx = frame.getContext('2d', { willReadFrequently: true })!;
 
-  // One static grain layer at GIF resolution — gradient-independent, so it
-  // composites identically over every frame.
-  let grain: HTMLCanvasElement | null = null;
-  if (state.grainOn) {
-    grain = document.createElement('canvas');
-    grain.width = gw;
-    grain.height = gh;
-    paintGrain(grain.getContext('2d')!, gw, gh);
-  }
-
   const enc = GIFEncoder();
   const delay = Math.round(1000 / FPS);
 
@@ -54,11 +42,6 @@ export async function exportGIF(durationSec: number, onProgress?: (p: number) =>
     fctx.imageSmoothingEnabled = true;
     fctx.clearRect(0, 0, gw, gh);
     fctx.drawImage(dom.gc, 0, 0, gw, gh);
-    if (grain) {
-      fctx.globalCompositeOperation = grainCompositeOp();
-      fctx.drawImage(grain, 0, 0);
-      fctx.globalCompositeOperation = 'source-over';
-    }
 
     const { data } = fctx.getImageData(0, 0, gw, gh);
     const palette = quantize(data, 256);

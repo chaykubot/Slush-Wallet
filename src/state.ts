@@ -5,9 +5,6 @@ export const state = {
   stops: ['#f12200', '#ff5127', '#ffa186', '#702de6', '#895ffa', '#9f83fb'] as string[],
   gradType: 'radial-h' as GradientType,
   playing: true,
-  grainOn: true,
-  /** Grain composite mode; 'normal' maps to source-over on export. */
-  grainBlend: 'normal',
   /** Animation clock, advanced every frame by the loop. */
   t: 0,
   /** Main canvas dimensions in CSS pixels. */

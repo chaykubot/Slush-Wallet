@@ -2,7 +2,6 @@ import { dom } from '../dom';
 import { state } from '../state';
 import { MAX_STOPS, MIN_STOPS } from '../constants';
 import { randomHex } from '../utils/color';
-import { makeGrain } from '../render/grain';
 import { updateCSS } from './cssSnapshot';
 
 /** Index of the row currently being dragged, or null when not dragging. */
@@ -15,7 +14,6 @@ function moveStop(from: number, to: number): void {
   state.stops.splice(to, 0, c);
   renderStops();
   updateCSS();
-  makeGrain();
 }
 
 /** Rebuild the colour-stop editor rows from state. */
@@ -52,7 +50,6 @@ export function renderStops(): void {
       state.stops[i] = v;
       hex.value = v.toUpperCase();
       updateCSS();
-      makeGrain();
     });
     hex.addEventListener('input', (e) => {
       const v = (e.target as HTMLInputElement).value.trim();
@@ -60,7 +57,6 @@ export function renderStops(): void {
         state.stops[i] = v;
         picker.value = v;
         updateCSS();
-        makeGrain();
       }
     });
     del.addEventListener('click', () => {
@@ -68,7 +64,6 @@ export function renderStops(): void {
       state.stops.splice(i, 1);
       renderStops();
       updateCSS();
-      makeGrain();
     });
 
     row.addEventListener('dragstart', (e) => {
@@ -104,6 +99,5 @@ export function initStops(): void {
     state.stops.push(randomHex());
     renderStops();
     updateCSS();
-    makeGrain();
   });
 }

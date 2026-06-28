@@ -8,7 +8,6 @@ export function byId<T extends HTMLElement>(id: string): T {
 /** Cached references to every element the app interacts with. */
 export const dom = {
   gc: byId<HTMLCanvasElement>('gc'),
-  grain: byId<HTMLCanvasElement>('grain'),
   stopsList: byId<HTMLDivElement>('stops-list'),
   addStop: byId<HTMLButtonElement>('add-stop'),
   gradType: byId<HTMLSelectElement>('grad-type'),
@@ -19,10 +18,8 @@ export const dom = {
   playBtn: byId<HTMLButtonElement>('play-btn'),
   randBtn: byId<HTMLButtonElement>('rand-btn'),
   dlBtn: byId<HTMLButtonElement>('dl-btn'),
-  grainToggle: byId<HTMLButtonElement>('grain-toggle'),
-  grainScale: byId<HTMLInputElement>('grain-scale'),
-  grainStrength: byId<HTMLInputElement>('grain-strength'),
-  grainContrast: byId<HTMLInputElement>('grain-contrast'),
+  grainMix: byId<HTMLInputElement>('grain-mix'),
+  grainMixScale: byId<HTMLInputElement>('grain-mix-scale'),
   speed: byId<HTMLInputElement>('speed'),
   blobsize: byId<HTMLInputElement>('blobsize'),
   swirl: byId<HTMLInputElement>('swirl'),

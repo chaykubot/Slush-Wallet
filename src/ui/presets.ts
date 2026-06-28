@@ -1,7 +1,6 @@
 import { byId } from '../dom';
 import { state } from '../state';
 import { PRESETS, PRESETS_SWIRL } from '../presets';
-import { makeGrain } from '../render/grain';
 import { renderStops } from './stops';
 import { updateCSS } from './cssSnapshot';
 
@@ -26,7 +25,6 @@ export function renderPresets(): void {
       state.stops = [...preset];
       renderStops();
       updateCSS();
-      makeGrain();
     });
     root.appendChild(chip);
   });

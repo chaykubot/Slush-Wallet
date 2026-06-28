@@ -1,7 +1,6 @@
 import { dom } from '../dom';
 import { state } from '../state';
 import { loop, setFrameHook } from '../render/renderer';
-import { grainCompositeOp } from '../settings';
 
 /** Codec preference: MP4 (Safari) first, then WebM (Chrome/Firefox). */
 const MIME_CANDIDATES = [
@@ -58,15 +57,11 @@ export function startRecording(): void {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
-  // Composite gradient + grain into the recording canvas on every rendered frame.
+  // Copy the gradient (colour-mix grain already baked in) into the recording
+  // canvas on every rendered frame.
   setFrameHook(() => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(dom.gc, 0, 0);
-    if (state.grainOn) {
-      ctx.globalCompositeOperation = grainCompositeOp();
-      ctx.drawImage(dom.grain, 0, 0);
-      ctx.globalCompositeOperation = 'source-over';
-    }
   });
 
   // The loop must run to produce frames; force it on for the duration.
