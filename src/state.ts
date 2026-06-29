@@ -2,7 +2,7 @@ import type { GradientType } from './types';
 
 /** Single source of mutable runtime state, shared across render + UI modules. */
 export const state = {
-  stops: ['#f12200', '#ff5127', '#ffa186', '#702de6', '#895ffa', '#9f83fb'] as string[],
+  stops: ['#ffa186', '#ff8062', '#ff5127', '#702de6', '#895ffa', '#9f83fb'] as string[],
   gradType: 'radial-h' as GradientType,
   playing: true,
   /** Animation clock, advanced every frame by the loop. */
