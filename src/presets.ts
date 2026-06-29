@@ -4,7 +4,7 @@ export const PRESETS: string[][] = [
   ['#af9dff', '#9f83fb', '#702de6', '#0079fa', '#4697ff', '#9ec7fe'],
   ['#ffa186', '#ff8062', '#ff5127', '#702de6', '#895ffa', '#9f83fb'],
   ['#af9dff', '#9f83fb', '#895ffa', '#eb1478', '#fa5997', '#ffaacd'],
-  ['#9ec7fe', '#4697ff', '#0079fa', '#eb1478', '#fa5997', '#ffaacd'],
+  ['#9ec7fe', '#70b0ff', '#4697ff', '#eb1478', '#fa5997', '#f77dac'],
 ];
 
 /** Original 5-colour presets, kept for the Mesh-Swirl gradient. */
