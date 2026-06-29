@@ -39,7 +39,7 @@ select { width: 100%; background: var(--surface); color: var(--text); border: 1p
 .gicon { display: block; width: 100%; height: 100%; border-radius: inherit; overflow: hidden; }
 .gicon svg { display: block; width: 100%; height: 100%; }
 .gtype:hover { color: var(--text); border-color: rgba(10,10,11,0.35); }
-.gtype.active { color: #fff; background: var(--brand); border-color: var(--brand); }
+.gtype.active { color: var(--brand); border-color: transparent; }
 .gtype::after { content: attr(data-label); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: var(--brand); color: #fff; font-size: 11px; line-height: 1; white-space: nowrap; padding: 5px 7px; border-radius: 6px; opacity: 0; pointer-events: none; transition: opacity .12s; z-index: 5; }
 .gtype:hover::after { opacity: 1; }
 .stops-list { display: flex; flex-direction: column; gap: 6px; }
