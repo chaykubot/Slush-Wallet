@@ -25,23 +25,6 @@ function hash21(ix: number, iy: number): number {
   return h / 4294967296;
 }
 
-/**
- * Smooth 2D value noise → [0,1] (bilinear lattice interpolation, smoothstep).
- * Sampled at an integer point it returns the raw lattice hash, so at scale 1
- * (where coords are whole pixels) it collapses back to per-pixel white noise.
- */
-function valueNoise(px: number, py: number): number {
-  const ix = Math.floor(px), iy = Math.floor(py);
-  const fx = px - ix, fy = py - iy;
-  const ux = fx * fx * (3 - 2 * fx);
-  const uy = fy * fy * (3 - 2 * fy);
-  const a = hash21(ix, iy);
-  const b = hash21(ix + 1, iy);
-  const c = hash21(ix, iy + 1);
-  const d = hash21(ix + 1, iy + 1);
-  return a + (b - a) * ux + (c - a) * uy + (a - b - c + d) * ux * uy;
-}
-
 // Precomputed per-pixel displacement field, rebuilt only when the buffer size,
 // the mix amount, or the speck scale changes — per frame we just gather, which
 // is one O(N) pass.
@@ -57,19 +40,17 @@ function buildMap(w: number, h: number, amount: number, scale: number): void {
   // ~0.2 of the image; 0.15 gives a wide sandy mixing band that matches the look
   // without smearing the colours into mud. Scaled by the slider (0..1).
   const maxDisp = amount * 0.15 * minDim;
-  // Speck size: dividing the sample coords by `scale` stretches the smooth noise
-  // so the specks grow into soft rounded blobs. scale = 1 → integer-lattice
-  // sampling = per-pixel white noise (the finest, original look).
-  const inv = 1 / Math.max(1, scale);
+  // Speck size: the noise is hashed per `scale × scale` block, so the specks are
+  // crisp squares. scale = 1 → per-pixel white noise (the finest, original look).
+  const cell = Math.max(1, scale);
   for (let y = 0; y < h; y++) {
-    const py = y * inv;
+    const cy = Math.floor(y / cell);
     for (let x = 0; x < w; x++) {
       const i = y * w + x;
-      const px = x * inv;
-      // Two value-noise samples, decorrelated by an integer lattice shift (which
-      // keeps the scale-1 case exactly per-pixel).
-      const nx = valueNoise(px, py) - 0.5;
-      const ny = valueNoise(px + 9173, py + 4271) - 0.5;
+      const cx = Math.floor(x / cell);
+      // Two hashes of the block coords, decorrelated by an integer lattice shift.
+      const nx = hash21(cx, cy) - 0.5;
+      const ny = hash21(cx + 9173, cy + 4271) - 0.5;
       dxMap[i] = (nx * 2 * maxDisp) | 0;
       dyMap[i] = (ny * 2 * maxDisp) | 0;
     }
