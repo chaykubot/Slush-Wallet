@@ -1,6 +1,6 @@
 /** Curated Slush brand gradient presets (6 colours) for non-swirl gradient types. */
 export const PRESETS: string[][] = [
-  ['#ff8062', '#ff5127', '#f12200', '#eb1478', '#f77dac', '#ffaacd'],
+  ['#ff8062', '#ff8062', '#ff5127', '#eb1478', '#f77dac', '#ffaacd'],
   ['#af9dff', '#9f83fb', '#702de6', '#0079fa', '#4697ff', '#9ec7fe'],
   ['#ffa186', '#ff8062', '#ff5127', '#702de6', '#895ffa', '#9f83fb'],
   ['#af9dff', '#9f83fb', '#895ffa', '#eb1478', '#fa5997', '#ffaacd'],
