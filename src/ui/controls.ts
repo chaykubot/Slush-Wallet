@@ -24,9 +24,12 @@ function applyTypeDefaults(defaults: Record<string, number>): void {
   }
 }
 
-/** Sync UI to the selected gradient type: show/hide swirl, relabel blob size. */
+/** Icon buttons for picking the gradient type. */
+let gradTypeBtns: HTMLButtonElement[] = [];
+
+/** Sync UI to the current `state.gradType`: show/hide swirl, relabel blob size,
+ * and highlight the active icon. */
 export function applyGradType(): void {
-  state.gradType = dom.gradType.value as GradientType;
   const isWave = state.gradType === 'wave-h' || state.gradType === 'wave-v';
   dom.swirlSec.style.display = state.gradType === 'mesh' ? '' : 'none';
   dom.stretchSec.style.display = isWave ? '' : 'none';
@@ -36,20 +39,27 @@ export function applyGradType(): void {
   // Setting `max` auto-clamps the value in the browser, so just resync the label.
   dom.blobsize.max = state.gradType === 'mesh' ? '40' : '25';
   byId('blobsize-v').textContent = dom.blobsize.value;
+
+  gradTypeBtns.forEach((b) => b.classList.toggle('active', b.dataset.type === state.gradType));
   updateCSS();
 }
 
-/** Switching gradient type loads that type's default sliders + preset set. */
-function onGradTypeChange(): void {
+/** Picking a gradient type loads that type's default sliders + preset set. */
+function selectGradType(type: GradientType): void {
+  if (type === state.gradType) return;
+  state.gradType = type;
   applyGradType();
-  applyTypeDefaults(TYPE_DEFAULTS[state.gradType]);
+  applyTypeDefaults(TYPE_DEFAULTS[type]);
   renderPresets();
   updateCSS();
 }
 
 /** Attach all control listeners (sliders, grain, playback, actions, resize). */
 export function initControls(): void {
-  dom.gradType.addEventListener('change', onGradTypeChange);
+  gradTypeBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('.gtype'));
+  gradTypeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => selectGradType(btn.dataset.type as GradientType));
+  });
 
   // Sliders that update a value label and the CSS snapshot.
   SLIDER_IDS.forEach((id) => {

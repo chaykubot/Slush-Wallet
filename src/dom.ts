@@ -10,7 +10,6 @@ export const dom = {
   gc: byId<HTMLCanvasElement>('gc'),
   stopsList: byId<HTMLDivElement>('stops-list'),
   addStop: byId<HTMLButtonElement>('add-stop'),
-  gradType: byId<HTMLSelectElement>('grad-type'),
   swirlSec: byId<HTMLDivElement>('swirl-sec'),
   stretchSec: byId<HTMLDivElement>('stretch-sec'),
   blobsizeLabel: byId<HTMLDivElement>('blobsize-label'),
