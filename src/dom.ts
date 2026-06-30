@@ -19,6 +19,7 @@ export const dom = {
   dlBtn: byId<HTMLButtonElement>('dl-btn'),
   grainMix: byId<HTMLInputElement>('grain-mix'),
   grainMixScale: byId<HTMLInputElement>('grain-mix-scale'),
+  grainSharpness: byId<HTMLInputElement>('grain-sharpness'),
   speed: byId<HTMLInputElement>('speed'),
   blobsize: byId<HTMLInputElement>('blobsize'),
   swirl: byId<HTMLInputElement>('swirl'),

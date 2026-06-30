@@ -28,11 +28,11 @@ function hash21(ix: number, iy: number): number {
 // Precomputed per-pixel displacement field, rebuilt only when the buffer size,
 // the mix amount, or the speck scale changes — per frame we just gather, which
 // is one O(N) pass.
-let mapW = 0, mapH = 0, mapAmt = -1, mapScale = -1;
+let mapW = 0, mapH = 0, mapAmt = -1, mapScale = -1, mapSharp = -1;
 let dxMap: Int16Array = new Int16Array(0);
 let dyMap: Int16Array = new Int16Array(0);
 
-function buildMap(w: number, h: number, amount: number, scale: number): void {
+function buildMap(w: number, h: number, amount: number, scale: number, sharp: number): void {
   dxMap = new Int16Array(w * h);
   dyMap = new Int16Array(w * h);
   const minDim = Math.min(w, h);
@@ -43,19 +43,25 @@ function buildMap(w: number, h: number, amount: number, scale: number): void {
   // Speck size: the noise is hashed per `scale × scale` block, so the specks are
   // crisp squares. scale = 1 → per-pixel white noise (the finest, original look).
   const cell = Math.max(1, scale);
+  // Sharpness: shape the [-1,1] noise toward its extremes so specks commit fully
+  // to one side (crisp salt-and-pepper) rather than landing on muddy in-between
+  // shades. sharp = 1 → unchanged uniform jitter.
+  const exp = 1 / Math.max(1, sharp);
+  const shape = (v: number): number =>
+    sharp <= 1 ? v : Math.sign(v) * Math.pow(Math.abs(v), exp);
   for (let y = 0; y < h; y++) {
     const cy = Math.floor(y / cell);
     for (let x = 0; x < w; x++) {
       const i = y * w + x;
       const cx = Math.floor(x / cell);
       // Two hashes of the block coords, decorrelated by an integer lattice shift.
-      const nx = hash21(cx, cy) - 0.5;
-      const ny = hash21(cx + 9173, cy + 4271) - 0.5;
-      dxMap[i] = (nx * 2 * maxDisp) | 0;
-      dyMap[i] = (ny * 2 * maxDisp) | 0;
+      const nx = shape(hash21(cx, cy) * 2 - 1);
+      const ny = shape(hash21(cx + 9173, cy + 4271) * 2 - 1);
+      dxMap[i] = (nx * maxDisp) | 0;
+      dyMap[i] = (ny * maxDisp) | 0;
     }
   }
-  mapW = w; mapH = h; mapAmt = amount; mapScale = scale;
+  mapW = w; mapH = h; mapAmt = amount; mapScale = scale; mapSharp = sharp;
 }
 
 /**
@@ -66,13 +72,14 @@ export function applyMixerGrain(canvas: HTMLCanvasElement): void {
   const amount = +dom.grainMix.value / 100;
   if (amount <= 0) return;
   const scale = +dom.grainMixScale.value;
+  const sharp = +dom.grainSharpness.value;
 
   const ctx = canvas.getContext('2d')!;
   const w = canvas.width, h = canvas.height;
   if (w === 0 || h === 0) return;
 
-  if (w !== mapW || h !== mapH || amount !== mapAmt || scale !== mapScale) {
-    buildMap(w, h, amount, scale);
+  if (w !== mapW || h !== mapH || amount !== mapAmt || scale !== mapScale || sharp !== mapSharp) {
+    buildMap(w, h, amount, scale, sharp);
   }
 
   const src = ctx.getImageData(0, 0, w, h);

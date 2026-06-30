@@ -73,7 +73,7 @@ export function initControls(): void {
 
   // Colour-mix grain displaces the gradient itself (per-frame in the loop), so
   // it just needs a redraw to show up while paused.
-  (['grain-mix', 'grain-mix-scale'] as const).forEach((id) => {
+  (['grain-mix', 'grain-mix-scale', 'grain-sharpness'] as const).forEach((id) => {
     const input = byId<HTMLInputElement>(id);
     const label = byId(`${id}-v`);
     input.addEventListener('input', () => {
