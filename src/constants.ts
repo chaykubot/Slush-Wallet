@@ -3,7 +3,7 @@ export const OFF_SCALE = 0.35;
 
 /** Allowed range for the number of colour stops. */
 export const MIN_STOPS = 3;
-export const MAX_STOPS = 10;
+export const MAX_STOPS = 12;
 
 /** Sliders that share the same wiring: update their value label + the CSS snapshot. */
 export const SLIDER_IDS = [
