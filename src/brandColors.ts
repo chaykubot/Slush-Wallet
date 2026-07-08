@@ -24,4 +24,8 @@ export const BRAND_RAMPS: BrandRamp[] = [
     name: 'Blue',
     colors: ['#c8dfff', '#9ec7fe', '#70b0ff', '#4697ff', '#0079fa', '#005fd4', '#004ea8', '#003984', '#002c61'],
   },
+  {
+    name: 'Neutral',
+    colors: ['#ffffff', '#f3f3f6', '#eaeaf0', '#dbdbe1', '#babac4', '#8d8d9a', '#63636d', '#47474e', '#3d3d42', '#1d1d20', '#0a0a0b'],
+  },
 ];
