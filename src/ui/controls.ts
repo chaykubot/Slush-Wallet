@@ -9,8 +9,8 @@ import { updateCSS } from './cssSnapshot';
 
 /** Default slider values (UI scale) loaded when switching to each gradient type. */
 const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
-  'radial-h': { speed: 3, blobsize: 10, zoom: 100, offx: 0, offy: 0, blur: 10 },
-  'radial-v': { speed: 3, blobsize: 10, zoom: 100, offx: 0, offy: 0, blur: 10 },
+  'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 100, offx: 0, offy: 0, blur: 10 },
+  'radial-v': { speed: 3, blobsize: 10, stretch: 0, zoom: 100, offx: 0, offy: 0, blur: 10 },
   'wave-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 130, offx: 0, offy: 0, blur: 10 },
   'wave-v': { speed: 3, blobsize: 10, stretch: 10, zoom: 130, offx: 0, offy: 0, blur: 10 },
   'mesh': { speed: 3, blobsize: 10, swirl: 0, zoom: 150, offx: 0, offy: 0, blur: 10 },
@@ -31,8 +31,13 @@ let gradTypeBtns: HTMLButtonElement[] = [];
  * and highlight the active icon. */
 export function applyGradType(): void {
   const isWave = state.gradType === 'wave-h' || state.gradType === 'wave-v';
+  const isRadial = state.gradType === 'radial-h' || state.gradType === 'radial-v';
   dom.swirlSec.style.display = state.gradType === 'mesh' ? '' : 'none';
-  dom.stretchSec.style.display = isWave ? '' : 'none';
+  dom.stretchSec.style.display = isWave || isRadial ? '' : 'none';
+  byId('stretch-label').textContent =
+    state.gradType === 'radial-h' ? 'Stretch vertically'
+    : state.gradType === 'radial-v' ? 'Stretch horizontally'
+    : 'Stretch';
   dom.blobsizeLabel.textContent = isWave ? 'Wave amplitude' : 'Blob size';
 
   // Mesh allows larger blobs (UI 0-40 = actual 50-90); other types cap at 25.

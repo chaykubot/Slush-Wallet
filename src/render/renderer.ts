@@ -2,7 +2,7 @@ import { dom } from '../dom';
 import { ctx, offC, mixC, mixCtx } from '../canvas';
 import { state } from '../state';
 import { OFF_SCALE } from '../constants';
-import { blobSizeActual, softnessActual, stretchActual, swirlActual } from '../settings';
+import { blobSizeActual, radialStretchActual, softnessActual, stretchActual, swirlActual } from '../settings';
 import { drawMeshBlobs } from './mesh';
 import { applyMixerGrain } from './mixerGrain';
 import { applySwirl } from './swirl';
@@ -40,12 +40,16 @@ export function drawGradient(): void {
       result = offC;
   }
 
-  // Stretch for wave gradients: magnify along the wave's travel axis by sampling
-  // a narrower source slice, so the pattern spreads out. Wave-H stretches
-  // horizontally, Wave-V vertically.
+  // Stretch by sampling a narrower source slice, so the pattern magnifies along
+  // one axis. Wave-H/Wave-V stretch along their travel axis; radials stretch
+  // along the perpendicular axis (Radial-H → vertically, Radial-V → horizontally).
   const isWaveH = state.gradType === 'wave-h';
   const isWaveV = state.gradType === 'wave-v';
-  const stretch = isWaveH || isWaveV ? stretchActual() / 100 : 1;
+  const isRadialH = state.gradType === 'radial-h';
+  const isRadialV = state.gradType === 'radial-v';
+  const isWave = isWaveH || isWaveV;
+  const isRadial = isRadialH || isRadialV;
+  const stretch = isWave ? stretchActual() / 100 : isRadial ? radialStretchActual() / 100 : 1;
 
   const { W, H } = state;
   // Colour-mix grain dithers the gradient at full display resolution so it stays
@@ -56,8 +60,9 @@ export function drawGradient(): void {
   const target = mixOn ? mixCtx : ctx;
   target.clearRect(0, 0, W, H);
   target.filter = blurPx > 0 ? `blur(${blurPx}px)` : 'none';
-  const drawW = ow / zoom / (isWaveH ? stretch : 1);
-  const drawH = oh / zoom / (isWaveV ? stretch : 1);
+  // Horizontal magnify: Wave-H or Radial-V. Vertical magnify: Wave-V or Radial-H.
+  const drawW = ow / zoom / (isWaveH || isRadialV ? stretch : 1);
+  const drawH = oh / zoom / (isWaveV || isRadialH ? stretch : 1);
   // Offset pans the crop zone: -100 = left/top edge, 0 = centre, 100 = right/bottom edge.
   const panX = (ow - drawW) / 2 * (1 + offX);
   const panY = (oh - drawH) / 2 * (1 + offY);

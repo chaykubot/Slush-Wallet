@@ -14,3 +14,5 @@ export const blobSizeActual = (): number => +dom.blobsize.value + 50;
 export const swirlActual = (): number => +dom.swirl.value + 40;
 export const softnessActual = (): number => +dom.blur.value + 20;
 export const stretchActual = (): number => 120 + +dom.stretch.value * (40 / 30);
+/** Radial stretch: slider 0 = none (100%), up to 250% along the perpendicular axis. */
+export const radialStretchActual = (): number => 100 + +dom.stretch.value * (150 / 30);
