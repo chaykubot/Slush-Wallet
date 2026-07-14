@@ -3,7 +3,6 @@ import { byId } from './dom';
 import { SLIDER_IDS } from './constants';
 import { initStops, renderStops } from './ui/stops';
 import { initPresets } from './ui/presets';
-import { initPatterns } from './ui/patterns';
 import { initBrandSwatches } from './ui/brandSwatches';
 import { initCssSnapshot, updateCSS } from './ui/cssSnapshot';
 import { applyGradType, initControls } from './ui/controls';
@@ -14,7 +13,6 @@ import { state } from './state';
 // Attach event listeners.
 initStops();
 initPresets();
-initPatterns();
 initBrandSwatches();
 initCssSnapshot();
 initControls();

@@ -16,6 +16,19 @@ const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
   'mesh': { speed: 3, blobsize: 10, swirl: 0, zoom: 150, offx: 0, offy: 0, blur: 10 },
 };
 
+/**
+ * Animation-clock phase each type freezes on when selected (the tool boots and
+ * switches types paused). Chosen so the static frame matches the approved
+ * reference shots: radials read straight horizontal/vertical, waves pause
+ * mid-sway where their band tilts into a diagonal. Swirl is exempt.
+ */
+const TYPE_STATIC_T: Partial<Record<GradientType, number>> = {
+  'radial-h': 0,
+  'radial-v': 0,
+  'wave-h': 5,
+  'wave-v': 5,
+};
+
 export function applyTypeDefaults(defaults: Record<string, number>): void {
   for (const [id, value] of Object.entries(defaults)) {
     const input = byId<HTMLInputElement>(id);
@@ -67,6 +80,8 @@ export function applyGradType(): void {
 function selectGradType(type: GradientType): void {
   if (type === state.gradType) return;
   state.gradType = type;
+  const staticT = TYPE_STATIC_T[type];
+  if (staticT !== undefined) state.t = staticT;
   applyGradType();
   applyTypeDefaults(TYPE_DEFAULTS[type]);
   renderPresets();
