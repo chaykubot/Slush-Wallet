@@ -16,12 +16,26 @@ const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
   'mesh': { speed: 3, blobsize: 10, swirl: 0, zoom: 150, offx: 0, offy: 0, blur: 10 },
 };
 
-function applyTypeDefaults(defaults: Record<string, number>): void {
+export function applyTypeDefaults(defaults: Record<string, number>): void {
   for (const [id, value] of Object.entries(defaults)) {
     const input = byId<HTMLInputElement>(id);
     input.value = String(value);
     byId(`${id}-v`).textContent = input.value;
   }
+}
+
+/** Start/stop the animation loop and keep the play button label in sync. */
+export function setPlaying(playing: boolean): void {
+  if (state.playing === playing) return;
+  state.playing = playing;
+  dom.playBtn.textContent = playing ? '⏸ Pause' : '▶ Play';
+  if (playing) loop();
+  else cancelAnimationFrame(state.raf);
+}
+
+/** Redraw the current frame when paused (the loop handles it while playing). */
+export function requestDraw(): void {
+  if (!state.playing) drawGradient();
 }
 
 /** Icon buttons for picking the gradient type. */
@@ -57,6 +71,7 @@ function selectGradType(type: GradientType): void {
   applyTypeDefaults(TYPE_DEFAULTS[type]);
   renderPresets();
   updateCSS();
+  requestDraw();
 }
 
 /** Attach all control listeners (sliders, grain, playback, actions, resize). */
@@ -73,6 +88,7 @@ export function initControls(): void {
     input.addEventListener('input', () => {
       label.textContent = input.value;
       updateCSS();
+      requestDraw();
     });
   });
 
@@ -87,12 +103,7 @@ export function initControls(): void {
     });
   });
 
-  dom.playBtn.addEventListener('click', () => {
-    state.playing = !state.playing;
-    dom.playBtn.textContent = state.playing ? '⏸ Pause' : '▶ Play';
-    if (state.playing) loop();
-    else cancelAnimationFrame(state.raf);
-  });
+  dom.playBtn.addEventListener('click', () => setPlaying(!state.playing));
 
   dom.randBtn.addEventListener('click', () => {
     state.stops = [...PALETTES[Math.floor(Math.random() * PALETTES.length)]];

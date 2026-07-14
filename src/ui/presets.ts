@@ -1,6 +1,8 @@
 import { byId } from '../dom';
 import { state } from '../state';
 import { PRESETS, PRESETS_SWIRL } from '../presets';
+import { drawGradient } from '../render/renderer';
+import { setPlaying } from './controls';
 import { renderStops } from './stops';
 import { updateCSS } from './cssSnapshot';
 
@@ -25,6 +27,9 @@ export function renderPresets(): void {
       state.stops = [...preset];
       renderStops();
       updateCSS();
+      // Presets render static by default; the user can un-pause to animate.
+      setPlaying(false);
+      drawGradient();
     });
     root.appendChild(chip);
   });

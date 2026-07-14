@@ -1,10 +1,14 @@
 import type { GradientType } from './types';
 
+/** Default colour stops — the tool's stock orange→purple palette. */
+export const DEFAULT_STOPS = ['#ffa186', '#ff8062', '#ff5127', '#702de6', '#895ffa', '#9f83fb'];
+
 /** Single source of mutable runtime state, shared across render + UI modules. */
 export const state = {
-  stops: ['#ffa186', '#ff8062', '#ff5127', '#702de6', '#895ffa', '#9f83fb'] as string[],
+  stops: [...DEFAULT_STOPS] as string[],
   gradType: 'radial-h' as GradientType,
-  playing: true,
+  /** Animation is opt-in: the tool boots paused and renders a static frame. */
+  playing: false,
   /** Animation clock, advanced every frame by the loop. */
   t: 0,
   /** Main canvas dimensions in CSS pixels. */
