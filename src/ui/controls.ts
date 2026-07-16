@@ -11,8 +11,8 @@ import { updateCSS } from './cssSnapshot';
 const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
   'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 136, offx: 69, offy: 0, blur: 10 },
   'radial-v': { speed: 3, blobsize: 10, stretch: 8, zoom: 138, offx: 0, offy: -100, blur: 10 },
-  'wave-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 220, offx: 0, offy: 0, blur: 10 },
-  'wave-v': { speed: 3, blobsize: 10, stretch: 10, zoom: 220, offx: 0, offy: 0, blur: 10 },
+  'wave-h': { speed: 3, blobsize: 25, stretch: 30, zoom: 100, offx: 0, offy: 0, blur: 10 },
+  'wave-v': { speed: 3, blobsize: 25, stretch: 30, zoom: 100, offx: 0, offy: 0, blur: 10 },
   'mesh': { speed: 3, blobsize: 10, swirl: 0, zoom: 150, offx: 0, offy: 0, blur: 10 },
 };
 
@@ -25,8 +25,8 @@ const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
 const TYPE_STATIC_T: Partial<Record<GradientType, number>> = {
   'radial-h': 0,
   'radial-v': 0,
-  'wave-h': 9,
-  'wave-v': 3,
+  'wave-h': 6,
+  'wave-v': 4,
 };
 
 export function applyTypeDefaults(defaults: Record<string, number>): void {
