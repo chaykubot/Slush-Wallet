@@ -9,10 +9,10 @@ import { updateCSS } from './cssSnapshot';
 
 /** Default slider values (UI scale) loaded when switching to each gradient type. */
 const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
-  'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 100, offx: 0, offy: 0, blur: 10 },
-  'radial-v': { speed: 3, blobsize: 10, stretch: 0, zoom: 100, offx: 0, offy: 0, blur: 10 },
-  'wave-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 130, offx: 0, offy: 0, blur: 10 },
-  'wave-v': { speed: 3, blobsize: 10, stretch: 10, zoom: 130, offx: 0, offy: 0, blur: 10 },
+  'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 136, offx: 69, offy: 0, blur: 10 },
+  'radial-v': { speed: 3, blobsize: 10, stretch: 8, zoom: 138, offx: 0, offy: -100, blur: 10 },
+  'wave-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 220, offx: 0, offy: 0, blur: 10 },
+  'wave-v': { speed: 3, blobsize: 10, stretch: 10, zoom: 220, offx: 0, offy: 0, blur: 10 },
   'mesh': { speed: 3, blobsize: 10, swirl: 0, zoom: 150, offx: 0, offy: 0, blur: 10 },
 };
 
@@ -25,8 +25,8 @@ const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
 const TYPE_STATIC_T: Partial<Record<GradientType, number>> = {
   'radial-h': 0,
   'radial-v': 0,
-  'wave-h': 5,
-  'wave-v': 5,
+  'wave-h': 9,
+  'wave-v': 3,
 };
 
 export function applyTypeDefaults(defaults: Record<string, number>): void {
@@ -49,6 +49,14 @@ export function setPlaying(playing: boolean): void {
 /** Redraw the current frame when paused (the loop handles it while playing). */
 export function requestDraw(): void {
   if (!state.playing) drawGradient();
+}
+
+/** Apply the current type's default sliders + frozen phase (used at boot so the
+ * first paint matches the type's reference frame). */
+export function applyTypeStaticDefaults(): void {
+  applyTypeDefaults(TYPE_DEFAULTS[state.gradType]);
+  const staticT = TYPE_STATIC_T[state.gradType];
+  if (staticT !== undefined) state.t = staticT;
 }
 
 /** Icon buttons for picking the gradient type. */

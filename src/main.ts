@@ -5,7 +5,7 @@ import { initStops, renderStops } from './ui/stops';
 import { initPresets } from './ui/presets';
 import { initBrandSwatches } from './ui/brandSwatches';
 import { initCssSnapshot, updateCSS } from './ui/cssSnapshot';
-import { applyGradType, initControls } from './ui/controls';
+import { applyGradType, applyTypeStaticDefaults, initControls } from './ui/controls';
 import { initExportControls } from './ui/exportControls';
 import { drawGradient, loop, resize } from './render/renderer';
 import { state } from './state';
@@ -29,6 +29,9 @@ SLIDER_IDS.forEach((id) => {
   byId(`${id}-v`).textContent = byId<HTMLInputElement>(id).value;
 });
 applyGradType();
+// Deterministic first paint: load the boot type's static defaults (sliders +
+// frozen phase) so the initial frame matches its reference shot.
+applyTypeStaticDefaults();
 updateCSS();
 // Boot paused: render a single static frame; the loop only runs if un-paused.
 drawGradient();
