@@ -25,7 +25,7 @@ const TYPE_DEFAULTS: Record<GradientType, Record<string, number>> = {
 const TYPE_STATIC_T: Partial<Record<GradientType, number>> = {
   'radial-h': 0,
   'radial-v': 0,
-  'wave-h': 2,
+  'wave-h': 12,
   'wave-v': 14,
 };
 
