@@ -45,11 +45,17 @@ export interface Colorway {
   name: string;
   /** Base 6-stop preset — same list for every gradient type. */
   base: string[];
+  /** Grain settings the base (two-coloured) preset applies. */
+  baseGrain: Record<string, number>;
   dark: VariantStops;
   light: VariantStops;
   /** Per-variant, per-type slider overrides applied on top of VARIANT_TYPE_SETTINGS. */
   overrides?: Partial<Record<'dark' | 'light', Partial<Record<NonMesh, Record<string, number>>>>>;
 }
+
+/** Base-preset grain flavours. */
+const GRAIN_75 = { 'grain-mix': 75, 'grain-mix-scale': 1, 'grain-sharpness': 4.5 };
+const GRAIN_100 = { 'grain-mix': 100, 'grain-mix-scale': 1, 'grain-sharpness': 5 };
 
 /** Dark radials of these colourways sit centred: no crop offsets. */
 const centredDarkRadials = {
@@ -64,12 +70,14 @@ export const COLORWAYS: Colorway[] = [
   {
     name: 'Orange–Purple',
     base: ['#ffa186', '#ff8062', '#ff5127', '#702de6', '#895ffa', '#9f83fb'],
+    baseGrain: GRAIN_75,
     dark: dark(RED, PURPLE),
     light: light(RED, PURPLE),
   },
   {
     name: 'Blue–Pink',
     base: ['#70b0ff', '#4697ff', '#0079fa', '#eb1478', '#fa5997', '#f77dac'],
+    baseGrain: GRAIN_75,
     dark: allPatterns(['#ffaacd', '#f77dac', '#fa5997', '#eb1478', '#dd1dd7', '#004ea8', '#002c61', K, K, K, K, K]),
     light: {
       radial: ['#ffaacd', '#fa5997', '#bb015d', '#dd1dd7', '#4697ff', '#70b0ff', '#c8dfff', W, W, W, W, W],
@@ -80,12 +88,14 @@ export const COLORWAYS: Colorway[] = [
   {
     name: 'Orange–Pink',
     base: ['#ff8062', '#ff8062', '#ff5127', '#eb1478', '#f77dac', '#ffaacd'],
+    baseGrain: GRAIN_100,
     dark: dark(RED, PINK),
     light: light(RED, PINK),
   },
   {
     name: 'Purple–Blue',
-    base: ['#af9dff', '#9f83fb', '#702de6', '#0079fa', '#4697ff', '#9ec7fe'],
+    base: ['#9f83fb', '#702de6', '#5d0dc9', '#005fd4', '#0079fa', '#4697ff'],
+    baseGrain: GRAIN_100,
     dark: {
       radial: ['#9f83fb', '#895ffa', '#702de6', '#5d0dc9', '#004ea8', '#002c61', K, K, K, K, K, K],
       'wave-h': ['#af9dff', '#9f83fb', '#895ffa', '#702de6', '#005fd4', '#004ea8', '#002c61', K, K, K, K, K],
@@ -101,6 +111,7 @@ export const COLORWAYS: Colorway[] = [
   {
     name: 'Purple–Pink',
     base: ['#af9dff', '#9f83fb', '#895ffa', '#eb1478', '#fa5997', '#ffaacd'],
+    baseGrain: GRAIN_75,
     dark: {
       radial: ['#f77dac', '#fa5997', '#eb1478', '#5d0dc9', '#2e1f5c', K, K, K, K, K],
       'wave-h': ['#f77dac', '#fa5997', '#eb1478', '#702de6', '#5d0dc9', '#2e1f5c', K, K, K, K, K],

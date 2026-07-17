@@ -2,7 +2,7 @@ import './styles/style.css';
 import { byId } from './dom';
 import { SLIDER_IDS } from './constants';
 import { initStops, renderStops } from './ui/stops';
-import { initPresets } from './ui/presets';
+import { applyActivePresetForType, initPresets } from './ui/presets';
 import { initBrandSwatches } from './ui/brandSwatches';
 import { initCssSnapshot, updateCSS } from './ui/cssSnapshot';
 import { applyGradType, applyTypeStaticDefaults, initControls } from './ui/controls';
@@ -30,8 +30,9 @@ SLIDER_IDS.forEach((id) => {
 });
 applyGradType();
 // Deterministic first paint: load the boot type's static defaults (sliders +
-// frozen phase) so the initial frame matches its reference shot.
+// frozen phase), then the boot preset's own settings (e.g. base grain) on top.
 applyTypeStaticDefaults();
+applyActivePresetForType();
 updateCSS();
 // Boot paused: render a single static frame; the loop only runs if un-paused.
 drawGradient();

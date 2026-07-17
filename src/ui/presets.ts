@@ -17,7 +17,9 @@ export function applyActivePresetForType(): void {
   if (!ap || state.gradType === 'mesh') return;
   const cw = COLORWAYS[ap.row];
   state.stops = [...variantStops(cw, ap.variant, state.gradType)];
-  if (ap.variant !== 'base') {
+  if (ap.variant === 'base') {
+    applyTypeDefaults(cw.baseGrain);
+  } else {
     const type = state.gradType as Exclude<GradientType, 'mesh'>;
     applyTypeDefaults(VARIANT_TYPE_SETTINGS[ap.variant][type]);
     // Colourway-specific tweaks (e.g. centred dark radials) on top.
