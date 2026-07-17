@@ -4,7 +4,7 @@ import { PALETTES, SLIDER_IDS } from '../constants';
 import type { GradientType } from '../types';
 import { loop, resize, drawGradient } from '../render/renderer';
 import { renderStops } from './stops';
-import { renderPresets } from './presets';
+import { applyActivePresetForType, renderPresets } from './presets';
 import { updateCSS } from './cssSnapshot';
 
 /** Default slider values (UI scale) loaded when switching to each gradient type. */
@@ -93,6 +93,9 @@ function selectGradType(type: GradientType): void {
   applyGradType();
   applyTypeDefaults(TYPE_DEFAULTS[type]);
   renderPresets();
+  // An active preset carries per-type stops (and variant settings) — re-apply
+  // them for the new type on top of the type defaults.
+  applyActivePresetForType();
   updateCSS();
   requestDraw();
 }
@@ -130,6 +133,7 @@ export function initControls(): void {
 
   dom.randBtn.addEventListener('click', () => {
     state.stops = [...PALETTES[Math.floor(Math.random() * PALETTES.length)]];
+    state.activePreset = null;
     renderStops();
     updateCSS();
     drawGradient();

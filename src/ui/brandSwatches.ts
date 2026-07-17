@@ -20,6 +20,7 @@ export function initBrandSwatches(): void {
       chip.addEventListener('click', () => {
         if (state.stops.length >= MAX_STOPS) return;
         state.stops.push(c);
+        state.activePreset = null;
         renderStops();
         updateCSS();
         requestDraw();

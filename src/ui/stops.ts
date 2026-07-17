@@ -13,6 +13,7 @@ function moveStop(from: number, to: number): void {
   if (from === to) return;
   const [c] = state.stops.splice(from, 1);
   state.stops.splice(to, 0, c);
+  state.activePreset = null;
   renderStops();
   updateCSS();
   requestDraw();
@@ -50,6 +51,7 @@ export function renderStops(): void {
     picker.addEventListener('input', (e) => {
       const v = (e.target as HTMLInputElement).value;
       state.stops[i] = v;
+      state.activePreset = null;
       hex.value = v.toUpperCase();
       updateCSS();
       requestDraw();
@@ -58,6 +60,7 @@ export function renderStops(): void {
       const v = (e.target as HTMLInputElement).value.trim();
       if (/^#[0-9a-f]{6}$/i.test(v)) {
         state.stops[i] = v;
+        state.activePreset = null;
         picker.value = v;
         updateCSS();
         requestDraw();
@@ -66,6 +69,7 @@ export function renderStops(): void {
     del.addEventListener('click', () => {
       if (state.stops.length <= MIN_STOPS) return;
       state.stops.splice(i, 1);
+      state.activePreset = null;
       renderStops();
       updateCSS();
       requestDraw();
@@ -102,6 +106,7 @@ export function initStops(): void {
   dom.addStop.addEventListener('click', () => {
     if (state.stops.length >= MAX_STOPS) return;
     state.stops.push(randomHex());
+    state.activePreset = null;
     renderStops();
     updateCSS();
     requestDraw();
