@@ -71,7 +71,11 @@ export const COLORWAYS: Colorway[] = [
     name: 'Blue–Pink',
     base: ['#70b0ff', '#4697ff', '#0079fa', '#eb1478', '#fa5997', '#f77dac'],
     dark: allPatterns(['#ffaacd', '#f77dac', '#fa5997', '#eb1478', '#dd1dd7', '#004ea8', '#002c61', K, K, K, K, K]),
-    light: allPatterns(['#ffaacd', '#fa5997', '#bb015d', '#dd1dd7', '#4697ff', '#70b0ff', '#c8dfff', W, W, W, W, W]),
+    light: {
+      radial: ['#ffaacd', '#fa5997', '#bb015d', '#dd1dd7', '#4697ff', '#70b0ff', '#c8dfff', W, W, W, W, W],
+      'wave-h': [W, W, W, W, W, '#c8dfff', '#70b0ff', '#4697ff', '#dd1dd7', '#bb015d', '#fa5997', '#ffaacd'],
+      'wave-v': [W, W, W, W, W, '#c8dfff', '#70b0ff', '#4697ff', '#dd1dd7', '#bb015d', '#fa5997', '#ffaacd'],
+    },
   },
   {
     name: 'Orange–Pink',
