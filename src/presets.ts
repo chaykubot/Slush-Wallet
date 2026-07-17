@@ -2,6 +2,7 @@ import type { GradientType } from './types';
 import { BRAND_RAMPS } from './brandColors';
 
 export type PresetVariant = 'base' | 'dark' | 'light';
+type NonMesh = Exclude<GradientType, 'mesh'>;
 
 const K = '#0a0a0b';
 const W = '#ffffff';
@@ -10,7 +11,6 @@ const ramp = (name: string): string[] => BRAND_RAMPS.find((r) => r.name === name
 const RED = ramp('Red');
 const PINK = ramp('Pink');
 const PURPLE = ramp('Purple');
-const BLUE = ramp('Blue');
 
 /** Per-pattern stop lists for a dark/light variant (radials share one list). */
 interface VariantStops {
@@ -19,22 +19,22 @@ interface VariantStops {
   'wave-v': string[];
 }
 
+/** Same stop list for every pattern. */
+const allPatterns = (stops: string[]): VariantStops => ({
+  radial: stops,
+  'wave-h': stops,
+  'wave-v': stops,
+});
+
 /**
- * Dark variant stops, generalised from the approved dark orange–purple preset:
- * warm ramp head, deep cool steps, black tail. Other colourways substitute
- * their own ramps at the same steps (e.g. Purple 600 → Pink 600).
+ * Generated dark/light stops (approved for orange–purple; orange–pink reuses
+ * the same ramp steps until its own lists arrive).
  */
 const dark = (w: string[], c: string[]): VariantStops => ({
   radial: [w[1], w[2], w[2], w[3], c[6], c[8], K, K, K, K, K],
   'wave-h': [w[1], w[2], w[3], w[3], c[5], c[6], c[8], K, K, K, K, K],
   'wave-v': [w[2], w[2], w[3], w[3], c[5], c[6], c[8], K, K, K, K, K],
 });
-
-/**
- * Light variant stops, from the approved white orange–purple preset:
- * radials run warm → cool → white tail; waves run white head → light-to-deep
- * cool → warm (same list for both wave types).
- */
 const light = (w: string[], c: string[]): VariantStops => ({
   radial: [w[1], w[2], w[3], c[5], c[3], c[0], W, W, W, W, W],
   'wave-h': [W, W, W, W, c[0], c[3], c[4], c[5], w[3], w[3], w[2], w[2]],
@@ -47,7 +47,17 @@ export interface Colorway {
   base: string[];
   dark: VariantStops;
   light: VariantStops;
+  /** Per-variant, per-type slider overrides applied on top of VARIANT_TYPE_SETTINGS. */
+  overrides?: Partial<Record<'dark' | 'light', Partial<Record<NonMesh, Record<string, number>>>>>;
 }
+
+/** Dark radials of these colourways sit centred: no crop offsets. */
+const centredDarkRadials = {
+  dark: {
+    'radial-v': { offy: 0 },
+    'radial-h': { offx: 0 },
+  },
+} as const;
 
 /** Preset rows: each colourway renders as [base, dark, light] chips. */
 export const COLORWAYS: Colorway[] = [
@@ -59,9 +69,9 @@ export const COLORWAYS: Colorway[] = [
   },
   {
     name: 'Blue–Pink',
-    base: ['#9ec7fe', '#70b0ff', '#4697ff', '#eb1478', '#fa5997', '#f77dac'],
-    dark: dark(BLUE, PINK),
-    light: light(BLUE, PINK),
+    base: ['#70b0ff', '#4697ff', '#0079fa', '#eb1478', '#fa5997', '#f77dac'],
+    dark: allPatterns(['#ffaacd', '#f77dac', '#fa5997', '#eb1478', '#dd1dd7', '#004ea8', '#002c61', K, K, K, K, K]),
+    light: allPatterns(['#ffaacd', '#fa5997', '#bb015d', '#dd1dd7', '#4697ff', '#70b0ff', '#c8dfff', W, W, W, W, W]),
   },
   {
     name: 'Orange–Pink',
@@ -72,14 +82,32 @@ export const COLORWAYS: Colorway[] = [
   {
     name: 'Purple–Blue',
     base: ['#af9dff', '#9f83fb', '#702de6', '#0079fa', '#4697ff', '#9ec7fe'],
-    dark: dark(PURPLE, BLUE),
-    light: light(PURPLE, BLUE),
+    dark: {
+      radial: ['#9f83fb', '#895ffa', '#702de6', '#5d0dc9', '#004ea8', '#002c61', K, K, K, K, K, K],
+      'wave-h': ['#af9dff', '#9f83fb', '#895ffa', '#702de6', '#005fd4', '#004ea8', '#002c61', K, K, K, K, K],
+      'wave-v': ['#af9dff', '#9f83fb', '#895ffa', '#702de6', '#005fd4', '#004ea8', '#002c61', K, K, K, K, K],
+    },
+    light: {
+      radial: ['#70b0ff', '#4697ff', '#0079fa', '#005fd4', '#702de6', '#895ffa', '#c1b6fd', '#dcd8fd', W, W, W, W],
+      'wave-h': [W, W, W, W, '#dcd8fd', '#c1b6fd', '#895ffa', '#702de6', '#005fd4', '#0079fa', '#4697ff', '#70b0ff'],
+      'wave-v': [W, W, W, W, '#dcd8fd', '#c1b6fd', '#895ffa', '#702de6', '#005fd4', '#0079fa', '#4697ff', '#70b0ff'],
+    },
+    overrides: centredDarkRadials,
   },
   {
     name: 'Purple–Pink',
     base: ['#af9dff', '#9f83fb', '#895ffa', '#eb1478', '#fa5997', '#ffaacd'],
-    dark: dark(PURPLE, PINK),
-    light: light(PURPLE, PINK),
+    dark: {
+      radial: ['#f77dac', '#fa5997', '#eb1478', '#5d0dc9', '#2e1f5c', K, K, K, K, K],
+      'wave-h': ['#f77dac', '#fa5997', '#eb1478', '#702de6', '#5d0dc9', '#2e1f5c', K, K, K, K, K],
+      'wave-v': ['#f77dac', '#fa5997', '#eb1478', '#702de6', '#5d0dc9', '#2e1f5c', K, K, K, K, K],
+    },
+    light: {
+      radial: ['#fa5997', '#fa5997', '#eb1478', '#bb015d', '#702de6', '#9f83fb', '#c1b6fd', '#dcd8fd', W, W, W, W],
+      'wave-h': [W, W, W, W, '#dcd8fd', '#c1b6fd', '#9f83fb', '#702de6', '#bb015d', '#eb1478', '#fa5997', '#fa5997'],
+      'wave-v': [W, W, W, W, '#dcd8fd', '#c1b6fd', '#9f83fb', '#702de6', '#bb015d', '#eb1478', '#fa5997', '#fa5997'],
+    },
+    overrides: centredDarkRadials,
   },
 ];
 
@@ -89,21 +117,22 @@ export const variantStops = (cw: Colorway, v: PresetVariant, type: GradientType)
 
 /**
  * Slider values applied when a dark/light variant preset is active, per
- * variant and gradient type (from the approved variant-preset shots). Base
- * presets leave the type's own defaults untouched.
+ * variant and gradient type (from the approved variant-preset shots). All
+ * variants use grain mix 50 / sharpness 3.5; base presets leave the type's
+ * own defaults untouched.
  */
-export const VARIANT_TYPE_SETTINGS: Record<'dark' | 'light', Record<Exclude<GradientType, 'mesh'>, Record<string, number>>> = {
+export const VARIANT_TYPE_SETTINGS: Record<'dark' | 'light', Record<NonMesh, Record<string, number>>> = {
   dark: {
-    'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 136, offx: 42, offy: 0, blur: 10, 'grain-mix': 100, 'grain-mix-scale': 1, 'grain-sharpness': 2 },
-    'radial-v': { speed: 3, blobsize: 10, stretch: 8, zoom: 138, offx: 0, offy: -75, blur: 10, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 5 },
-    'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 52, 'grain-mix': 62, 'grain-mix-scale': 1, 'grain-sharpness': 2 },
-    'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: 38, offy: -43, blur: 25, 'grain-mix': 56, 'grain-mix-scale': 1, 'grain-sharpness': 4 },
+    'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 136, offx: 42, offy: 0, blur: 10, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'radial-v': { speed: 3, blobsize: 10, stretch: 8, zoom: 138, offx: 0, offy: -75, blur: 10, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 35, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: -35, offy: -43, blur: 35, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
   },
   light: {
     'radial-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 136, offx: -65, offy: 0, blur: 40, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
     'radial-v': { speed: 3, blobsize: 10, stretch: 20, zoom: 138, offx: 0, offy: 45, blur: 40, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
-    'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 38, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
-    'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: 38, offy: -43, blur: 38, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 35, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: -35, offy: -43, blur: 35, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
   },
 };
 
