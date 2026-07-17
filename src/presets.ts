@@ -31,13 +31,14 @@ const dark = (w: string[], c: string[]): VariantStops => ({
 });
 
 /**
- * Light variant stops — PLACEHOLDER until the approved lists arrive: white
- * head, then the warm→cool ramp (white → warm → cool reading order).
+ * Light variant stops, from the approved white orange–purple preset:
+ * radials run warm → cool → white tail; waves run white head → light-to-deep
+ * cool → warm (same list for both wave types).
  */
 const light = (w: string[], c: string[]): VariantStops => ({
-  radial: [W, W, W, W, W, w[1], w[2], w[3], c[5], c[4], c[3]],
-  'wave-h': [W, W, W, W, W, w[1], w[2], w[3], w[3], c[5], c[4], c[3]],
-  'wave-v': [W, W, W, W, W, w[2], w[2], w[3], w[3], c[5], c[4], c[3]],
+  radial: [w[1], w[2], w[3], c[5], c[3], c[0], W, W, W, W, W],
+  'wave-h': [W, W, W, W, c[0], c[3], c[4], c[5], w[3], w[3], w[2], w[2]],
+  'wave-v': [W, W, W, W, c[0], c[3], c[4], c[5], w[3], w[3], w[2], w[2]],
 });
 
 export interface Colorway {
@@ -88,14 +89,22 @@ export const variantStops = (cw: Colorway, v: PresetVariant, type: GradientType)
 
 /**
  * Slider values applied when a dark/light variant preset is active, per
- * gradient type (from the approved variant-preset shots). Base presets leave
- * the type's own defaults untouched.
+ * variant and gradient type (from the approved variant-preset shots). Base
+ * presets leave the type's own defaults untouched.
  */
-export const VARIANT_TYPE_SETTINGS: Record<Exclude<GradientType, 'mesh'>, Record<string, number>> = {
-  'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 136, offx: 42, offy: 0, blur: 10, 'grain-mix': 100, 'grain-mix-scale': 1, 'grain-sharpness': 2 },
-  'radial-v': { speed: 3, blobsize: 10, stretch: 8, zoom: 138, offx: 0, offy: -75, blur: 10, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 5 },
-  'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 52, 'grain-mix': 62, 'grain-mix-scale': 1, 'grain-sharpness': 2 },
-  'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: 38, offy: -43, blur: 25, 'grain-mix': 56, 'grain-mix-scale': 1, 'grain-sharpness': 4 },
+export const VARIANT_TYPE_SETTINGS: Record<'dark' | 'light', Record<Exclude<GradientType, 'mesh'>, Record<string, number>>> = {
+  dark: {
+    'radial-h': { speed: 3, blobsize: 10, stretch: 0, zoom: 136, offx: 42, offy: 0, blur: 10, 'grain-mix': 100, 'grain-mix-scale': 1, 'grain-sharpness': 2 },
+    'radial-v': { speed: 3, blobsize: 10, stretch: 8, zoom: 138, offx: 0, offy: -75, blur: 10, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 5 },
+    'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 52, 'grain-mix': 62, 'grain-mix-scale': 1, 'grain-sharpness': 2 },
+    'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: 38, offy: -43, blur: 25, 'grain-mix': 56, 'grain-mix-scale': 1, 'grain-sharpness': 4 },
+  },
+  light: {
+    'radial-h': { speed: 3, blobsize: 10, stretch: 10, zoom: 136, offx: -65, offy: 0, blur: 40, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'radial-v': { speed: 3, blobsize: 10, stretch: 20, zoom: 138, offx: 0, offy: 45, blur: 40, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'wave-h': { speed: 3, blobsize: 4, stretch: 8, zoom: 100, offx: 0, offy: 0, blur: 38, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+    'wave-v': { speed: 3, blobsize: 14, stretch: 23, zoom: 128, offx: 38, offy: -43, blur: 38, 'grain-mix': 50, 'grain-mix-scale': 1, 'grain-sharpness': 3.5 },
+  },
 };
 
 /** Original 5-colour presets, kept for the Mesh-Swirl gradient. */

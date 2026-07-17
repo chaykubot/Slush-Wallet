@@ -18,7 +18,7 @@ export function applyActivePresetForType(): void {
   const cw = COLORWAYS[ap.row];
   state.stops = [...variantStops(cw, ap.variant, state.gradType)];
   if (ap.variant !== 'base') {
-    applyTypeDefaults(VARIANT_TYPE_SETTINGS[state.gradType as Exclude<GradientType, 'mesh'>]);
+    applyTypeDefaults(VARIANT_TYPE_SETTINGS[ap.variant][state.gradType as Exclude<GradientType, 'mesh'>]);
   }
   renderStops();
   updateCSS();
@@ -64,7 +64,8 @@ export function renderPresets(): void {
     const variants: [PresetVariant, string, boolean][] = [
       ['base', `linear-gradient(90deg, ${warm} 0 50%, ${cool} 50% 100%)`, false],
       ['dark', `linear-gradient(90deg, #0a0a0b 0 34%, ${warm} 34% 67%, ${cool} 67% 100%)`, false],
-      ['light', `linear-gradient(90deg, #ffffff 0 34%, ${warm} 34% 67%, ${cool} 67% 100%)`, true],
+      // Light reads white → cool → warm, matching its wave stop order.
+      ['light', `linear-gradient(90deg, #ffffff 0 34%, ${cool} 34% 67%, ${warm} 67% 100%)`, true],
     ];
     variants.forEach(([variant, bg, bordered]) => {
       root.appendChild(makeChip(bg, `${cw.name} · ${variant}`, () => {
