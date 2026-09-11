@@ -1,4 +1,5 @@
 import { dom } from '../dom';
+import { getRenderScale } from './renderer';
 
 /**
  * Colour-mixing grain (the reference shader's `u_grainMixer`).
@@ -71,7 +72,9 @@ function buildMap(w: number, h: number, amount: number, scale: number, sharp: nu
 export function applyMixerGrain(canvas: HTMLCanvasElement): void {
   const amount = +dom.grainMix.value / 100;
   if (amount <= 0) return;
-  const scale = +dom.grainMixScale.value;
+  // Speck size follows the render resolution so an export keeps the on-screen
+  // grain proportions instead of rendering it 2×/4× finer.
+  const scale = +dom.grainMixScale.value * getRenderScale();
   const sharp = +dom.grainSharpness.value;
 
   const ctx = canvas.getContext('2d')!;

@@ -10,6 +10,14 @@ import { drawWave } from './wave';
 import { drawRadial } from './radial';
 
 /**
+ * Render-resolution multiplier: 1 on screen, >1 while rendering an export
+ * frame. Pixel-sized effects (blur radius, grain speck size) multiply by it so
+ * a 2×/4× render keeps the on-screen proportions instead of looking finer.
+ */
+let renderScale = 1;
+export const getRenderScale = (): number => renderScale;
+
+/**
  * Render one frame: draw the gradient into the offscreen buffer, then blit it
  * to the visible canvas applying zoom, offset (pan) and softness (blur).
  */
@@ -19,7 +27,7 @@ export function drawGradient(): void {
   const zoom = +dom.zoom.value / 100;
   const offX = +dom.offx.value / 100;
   const offY = +dom.offy.value / 100;
-  const blurPx = softnessActual();
+  const blurPx = softnessActual() * renderScale;
 
   const ow = offC.width, oh = offC.height;
   if (ow === 0 || oh === 0) return;
@@ -79,17 +87,55 @@ export function drawGradient(): void {
   }
 }
 
+/** Size every buffer for a W×H render target. */
+function sizeBuffers(w: number, h: number): void {
+  state.W = w;
+  state.H = h;
+  dom.gc.width = w;
+  dom.gc.height = h;
+  mixC.width = w;
+  mixC.height = h;
+  offC.width = Math.round(w * OFF_SCALE);
+  offC.height = Math.round(h * OFF_SCALE);
+}
+
+/**
+ * Render the current frame at `scale`× the preview resolution into a new
+ * canvas. The whole pipeline — offscreen buffer, blur and colour-mix grain —
+ * runs at the larger size, so the result is genuinely sharper rather than an
+ * upscale of the visible canvas. Buffers are restored and the view redrawn
+ * before returning, all within one task so no intermediate frame is painted.
+ */
+export function renderAtScale(scale: number): HTMLCanvasElement {
+  const out = document.createElement('canvas');
+  const { W, H } = state;
+  if (scale === 1) {
+    out.width = W;
+    out.height = H;
+    out.getContext('2d')!.drawImage(dom.gc, 0, 0);
+    return out;
+  }
+  const sw = Math.round(W * scale);
+  const sh = Math.round(H * scale);
+  try {
+    renderScale = scale;
+    sizeBuffers(sw, sh);
+    drawGradient();
+    out.width = sw;
+    out.height = sh;
+    out.getContext('2d')!.drawImage(dom.gc, 0, 0);
+  } finally {
+    renderScale = 1;
+    sizeBuffers(W, H);
+    drawGradient();
+  }
+  return out;
+}
+
 /** Match canvas sizes to the preview area and resize the offscreen buffer. */
 export function resize(): void {
   const wrap = dom.gc.parentElement!;
-  state.W = wrap.offsetWidth;
-  state.H = wrap.offsetHeight;
-  dom.gc.width = state.W;
-  dom.gc.height = state.H;
-  mixC.width = state.W;
-  mixC.height = state.H;
-  offC.width = Math.round(state.W * OFF_SCALE);
-  offC.height = Math.round(state.H * OFF_SCALE);
+  sizeBuffers(wrap.offsetWidth, wrap.offsetHeight);
 }
 
 /** Optional per-frame callback (used by the video recorder to grab each frame). */
